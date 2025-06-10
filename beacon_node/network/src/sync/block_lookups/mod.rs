@@ -138,9 +138,7 @@ impl<T: BeaconChainTypes> BlockLookups<T> {
             failed_chains: LRUTimeCache::new(Duration::from_secs(
                 FAILED_CHAINS_CACHE_EXPIRY_SECONDS,
             )),
-            long_chains: LRUTimeCache::new(Duration::from_secs(
-                FAILED_CHAINS_CACHE_EXPIRY_SECONDS,
-            )),
+            long_chains: LRUTimeCache::new(Duration::from_secs(FAILED_CHAINS_CACHE_EXPIRY_SECONDS)),
             single_block_lookups: Default::default(),
             log,
         }

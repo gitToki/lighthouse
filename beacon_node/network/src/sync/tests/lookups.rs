@@ -1721,7 +1721,7 @@ fn test_parent_lookup_too_deep_grow_ancestor() {
     // Should not penalize peer, but network is not clear because of the blocks_by_range requests
     rig.expect_no_penalty_for(peer_id);
     rig.assert_failed_chain(chain_hash);
-    rig.assert_not_failed_chain(tip_root);
+    rig.assert_not_failed_chain(chain_hash);
 }
 
 #[test]
