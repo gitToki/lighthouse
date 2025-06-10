@@ -43,7 +43,6 @@ use crate::{
 use bls::verify_signature_sets;
 use itertools::Itertools;
 use proto_array::Block as ProtoBlock;
-use slog::debug;
 use slot_clock::SlotClock;
 use state_processing::{
     common::{
@@ -58,6 +57,7 @@ use state_processing::{
 };
 use std::borrow::Cow;
 use strum::AsRefStr;
+use tracing::debug;
 use tree_hash::TreeHash;
 use types::{
     Attestation, AttestationData, AttestationRef, BeaconCommittee,
@@ -272,12 +272,12 @@ pub enum Error {
     ///
     /// We were unable to process this attestation due to an internal error. It's unclear if the
     /// attestation is valid.
-    BeaconChainError(BeaconChainError),
+    BeaconChainError(Box<BeaconChainError>),
 }
 
 impl From<BeaconChainError> for Error {
     fn from(e: BeaconChainError) -> Self {
-        Self::BeaconChainError(e)
+        Self::BeaconChainError(Box::new(e))
     }
 }
 
@@ -430,10 +430,9 @@ fn process_slash_info<T: BeaconChainTypes>(
                     Ok((indexed, _)) => (indexed, true, err),
                     Err(e) => {
                         debug!(
-                            chain.log,
-                            "Unable to obtain indexed form of attestation for slasher";
-                            "attestation_root" => format!("{:?}", attestation.tree_hash_root()),
-                            "error" => format!("{:?}", e)
+                            attestation_root = ?attestation.tree_hash_root(),
+                            error =  ?e,
+                            "Unable to obtain indexed form of attestation for slasher"
                         );
                         return err;
                     }
@@ -447,9 +446,8 @@ fn process_slash_info<T: BeaconChainTypes>(
         if check_signature {
             if let Err(e) = verify_attestation_signature(chain, &indexed_attestation) {
                 debug!(
-                    chain.log,
-                    "Signature verification for slasher failed";
-                    "error" => format!("{:?}", e),
+                    error = ?e,
+                    "Signature verification for slasher failed"
                 );
                 return err;
             }
@@ -527,7 +525,7 @@ impl<'a, T: BeaconChainTypes> IndexedAggregatedAttestation<'a, T> {
             .observed_attestations
             .write()
             .is_known_subset(attestation, observed_attestation_key_root)
-            .map_err(|e| Error::BeaconChainError(e.into()))?
+            .map_err(|e| Error::BeaconChainError(Box::new(e.into())))?
         {
             metrics::inc_counter(&metrics::AGGREGATED_ATTESTATION_SUBSETS);
             return Err(Error::AttestationSupersetKnown(
@@ -630,7 +628,7 @@ impl<'a, T: BeaconChainTypes> IndexedAggregatedAttestation<'a, T> {
 
                 if !SelectionProof::from(selection_proof)
                     .is_aggregator(committee.committee.len(), &chain.spec)
-                    .map_err(|e| Error::BeaconChainError(e.into()))?
+                    .map_err(|e| Error::BeaconChainError(Box::new(e.into())))?
                 {
                     return Err(Error::InvalidSelectionProof { aggregator_index });
                 }
@@ -700,7 +698,7 @@ impl<'a, T: BeaconChainTypes> VerifiedAggregatedAttestation<'a, T> {
             .observed_attestations
             .write()
             .observe_item(attestation, Some(observed_attestation_key_root))
-            .map_err(|e| Error::BeaconChainError(e.into()))?
+            .map_err(|e| Error::BeaconChainError(Box::new(e.into())))?
         {
             metrics::inc_counter(&metrics::AGGREGATED_ATTESTATION_SUBSETS);
             return Err(Error::AttestationSupersetKnown(

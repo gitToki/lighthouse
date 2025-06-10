@@ -16,11 +16,12 @@ use std::marker::PhantomData;
 use std::sync::Arc;
 use tokio_util::codec::{Decoder, Encoder};
 use types::{
-    BlobSidecar, ChainSpec, DataColumnSidecar, EthSpec, ForkContext, ForkName, Hash256,
-    LightClientBootstrap, LightClientFinalityUpdate, LightClientOptimisticUpdate,
-    LightClientUpdate, RuntimeVariableList, SignedBeaconBlock, SignedBeaconBlockAltair,
-    SignedBeaconBlockBase, SignedBeaconBlockBellatrix, SignedBeaconBlockCapella,
-    SignedBeaconBlockDeneb, SignedBeaconBlockElectra, SignedBeaconBlockFulu,
+    BlobSidecar, ChainSpec, DataColumnSidecar, DataColumnsByRootIdentifier, EthSpec, ForkContext,
+    ForkName, Hash256, LightClientBootstrap, LightClientFinalityUpdate,
+    LightClientOptimisticUpdate, LightClientUpdate, RuntimeVariableList, SignedBeaconBlock,
+    SignedBeaconBlockAltair, SignedBeaconBlockBase, SignedBeaconBlockBellatrix,
+    SignedBeaconBlockCapella, SignedBeaconBlockDeneb, SignedBeaconBlockElectra,
+    SignedBeaconBlockFulu,
 };
 use unsigned_varint::codec::Uvi;
 
@@ -596,10 +597,12 @@ fn handle_rpc_request<E: EthSpec>(
         ))),
         SupportedProtocol::DataColumnsByRootV1 => Ok(Some(RequestType::DataColumnsByRoot(
             DataColumnsByRootRequest {
-                data_column_ids: RuntimeVariableList::from_ssz_bytes(
-                    decoded_buffer,
-                    spec.max_request_data_column_sidecars as usize,
-                )?,
+                data_column_ids:
+                    <RuntimeVariableList<DataColumnsByRootIdentifier>>::from_ssz_bytes_with_nested(
+                        decoded_buffer,
+                        spec.max_request_blocks(current_fork),
+                        spec.number_of_columns as usize,
+                    )?,
             },
         ))),
         SupportedProtocol::PingV1 => Ok(Some(RequestType::Ping(Ping {
@@ -765,8 +768,8 @@ fn handle_rpc_response<E: EthSpec>(
         SupportedProtocol::PingV1 => Ok(Some(RpcSuccessResponse::Pong(Ping {
             data: u64::from_ssz_bytes(decoded_buffer)?,
         }))),
-        SupportedProtocol::MetaDataV1 => Ok(Some(RpcSuccessResponse::MetaData(MetaData::V1(
-            MetaDataV1::from_ssz_bytes(decoded_buffer)?,
+        SupportedProtocol::MetaDataV1 => Ok(Some(RpcSuccessResponse::MetaData(Arc::new(
+            MetaData::V1(MetaDataV1::from_ssz_bytes(decoded_buffer)?),
         )))),
         SupportedProtocol::LightClientBootstrapV1 => match fork_name {
             Some(fork_name) => Ok(Some(RpcSuccessResponse::LightClientBootstrap(Arc::new(
@@ -826,11 +829,11 @@ fn handle_rpc_response<E: EthSpec>(
             )),
         },
         // MetaData V2/V3 responses have no context bytes, so behave similarly to V1 responses
-        SupportedProtocol::MetaDataV3 => Ok(Some(RpcSuccessResponse::MetaData(MetaData::V3(
-            MetaDataV3::from_ssz_bytes(decoded_buffer)?,
+        SupportedProtocol::MetaDataV3 => Ok(Some(RpcSuccessResponse::MetaData(Arc::new(
+            MetaData::V3(MetaDataV3::from_ssz_bytes(decoded_buffer)?),
         )))),
-        SupportedProtocol::MetaDataV2 => Ok(Some(RpcSuccessResponse::MetaData(MetaData::V2(
-            MetaDataV2::from_ssz_bytes(decoded_buffer)?,
+        SupportedProtocol::MetaDataV2 => Ok(Some(RpcSuccessResponse::MetaData(Arc::new(
+            MetaData::V2(MetaDataV2::from_ssz_bytes(decoded_buffer)?),
         )))),
         SupportedProtocol::BlocksByRangeV2 => match fork_name {
             Some(ForkName::Altair) => Ok(Some(RpcSuccessResponse::BlocksByRange(Arc::new(
@@ -935,8 +938,8 @@ mod tests {
     use crate::types::{EnrAttestationBitfield, EnrSyncCommitteeBitfield};
     use types::{
         blob_sidecar::BlobIdentifier, data_column_sidecar::Cell, BeaconBlock, BeaconBlockAltair,
-        BeaconBlockBase, BeaconBlockBellatrix, BeaconBlockHeader, DataColumnIdentifier, EmptyBlock,
-        Epoch, FixedBytesExtended, FullPayload, KzgCommitment, KzgProof, Signature,
+        BeaconBlockBase, BeaconBlockBellatrix, BeaconBlockHeader, DataColumnsByRootIdentifier,
+        EmptyBlock, Epoch, FixedBytesExtended, FullPayload, KzgCommitment, KzgProof, Signature,
         SignedBeaconBlockHeader, Slot,
     };
 
@@ -1005,6 +1008,7 @@ mod tests {
     fn bellatrix_block_small(spec: &ChainSpec) -> SignedBeaconBlock<Spec> {
         let mut block: BeaconBlockBellatrix<_, FullPayload<Spec>> =
             BeaconBlockBellatrix::empty(&Spec::default_spec());
+
         let tx = VariableList::from(vec![0; 1024]);
         let txs = VariableList::from(std::iter::repeat_n(tx, 5000).collect::<Vec<_>>());
 
@@ -1021,6 +1025,7 @@ mod tests {
     fn bellatrix_block_large(spec: &ChainSpec) -> SignedBeaconBlock<Spec> {
         let mut block: BeaconBlockBellatrix<_, FullPayload<Spec>> =
             BeaconBlockBellatrix::empty(&Spec::default_spec());
+
         let tx = VariableList::from(vec![0; 1024]);
         let txs = VariableList::from(std::iter::repeat_n(tx, 100000).collect::<Vec<_>>());
 
@@ -1064,14 +1069,15 @@ mod tests {
         }
     }
 
-    fn dcbroot_request(spec: &ChainSpec) -> DataColumnsByRootRequest {
+    fn dcbroot_request(spec: &ChainSpec, fork_name: ForkName) -> DataColumnsByRootRequest {
+        let number_of_columns = spec.number_of_columns as usize;
         DataColumnsByRootRequest {
             data_column_ids: RuntimeVariableList::new(
-                vec![DataColumnIdentifier {
+                vec![DataColumnsByRootIdentifier {
                     block_root: Hash256::zero(),
-                    index: 0,
+                    columns: RuntimeVariableList::from_vec(vec![0, 1, 2], number_of_columns),
                 }],
-                spec.max_request_data_column_sidecars as usize,
+                spec.max_request_blocks(fork_name),
             )
             .unwrap(),
         }
@@ -1099,28 +1105,31 @@ mod tests {
         Ping { data: 1 }
     }
 
-    fn metadata() -> MetaData<Spec> {
+    fn metadata() -> Arc<MetaData<Spec>> {
         MetaData::V1(MetaDataV1 {
             seq_number: 1,
             attnets: EnrAttestationBitfield::<Spec>::default(),
         })
+        .into()
     }
 
-    fn metadata_v2() -> MetaData<Spec> {
+    fn metadata_v2() -> Arc<MetaData<Spec>> {
         MetaData::V2(MetaDataV2 {
             seq_number: 1,
             attnets: EnrAttestationBitfield::<Spec>::default(),
             syncnets: EnrSyncCommitteeBitfield::<Spec>::default(),
         })
+        .into()
     }
 
-    fn metadata_v3() -> MetaData<Spec> {
+    fn metadata_v3() -> Arc<MetaData<Spec>> {
         MetaData::V3(MetaDataV3 {
             seq_number: 1,
             attnets: EnrAttestationBitfield::<Spec>::default(),
             syncnets: EnrSyncCommitteeBitfield::<Spec>::default(),
             custody_group_count: 1,
         })
+        .into()
     }
 
     /// Encodes the given protocol response as bytes.
@@ -1899,7 +1908,6 @@ mod tests {
             RequestType::MetaData(MetadataRequest::new_v1()),
             RequestType::BlobsByRange(blbrange_request()),
             RequestType::DataColumnsByRange(dcbrange_request()),
-            RequestType::DataColumnsByRoot(dcbroot_request(&chain_spec)),
             RequestType::MetaData(MetadataRequest::new_v2()),
         ];
         for req in requests.iter() {
@@ -1915,6 +1923,7 @@ mod tests {
                 RequestType::BlobsByRoot(blbroot_request(fork_name)),
                 RequestType::BlocksByRoot(bbroot_request_v1(fork_name)),
                 RequestType::BlocksByRoot(bbroot_request_v2(fork_name)),
+                RequestType::DataColumnsByRoot(dcbroot_request(&chain_spec, fork_name)),
             ]
         };
         for fork_name in ForkName::list_all() {
