@@ -114,6 +114,9 @@ pub struct BlockLookups<T: BeaconChainTypes> {
     /// A cache of failed chain lookups to prevent duplicate searches.
     failed_chains: LRUTimeCache<Hash256>,
 
+    /// A cache of long chain lookups to prevent duplicate searches without penalizing peers.
+    long_chains: LRUTimeCache<Hash256>,
+
     // TODO: Why not index lookups by block_root?
     single_block_lookups: FnvHashMap<SingleLookupId, SingleBlockLookup<T>>,
 }
@@ -133,6 +136,7 @@ impl<T: BeaconChainTypes> BlockLookups<T> {
             failed_chains: LRUTimeCache::new(Duration::from_secs(
                 FAILED_CHAINS_CACHE_EXPIRY_SECONDS,
             )),
+            long_chains: LRUTimeCache::new(Duration::from_secs(FAILED_CHAINS_CACHE_EXPIRY_SECONDS)),
             single_block_lookups: Default::default(),
         }
     }
@@ -289,7 +293,7 @@ impl<T: BeaconChainTypes> BlockLookups<T> {
 
                 // Searching for this parent would extend a parent chain over the max
                 // Insert the tip only to failed chains
-                self.failed_chains.insert(parent_chain.tip);
+                self.long_chains.insert(parent_chain.tip);
 
                 // Note: Drop only the chain that's too long until it merges with another chain
                 // that's not too long. Consider this attack: there's a chain of valid unknown
@@ -386,6 +390,13 @@ impl<T: BeaconChainTypes> BlockLookups<T> {
             for peer_id in peers {
                 cx.report_peer(*peer_id, PeerAction::MidToleranceError, "failed_chain");
             }
+            return false;
+        } else if self.long_chains.contains(&block_root) {
+            debug!(
+                ?block_root,
+                "Block is from a past long chain. Dropping without penalty"
+            );
+            // Don't penalize peers for extending long chains
             return false;
         }
 

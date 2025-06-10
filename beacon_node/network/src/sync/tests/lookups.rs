@@ -1691,6 +1691,7 @@ fn test_parent_lookup_too_deep_grow_ancestor() {
     let peer_id = rig.new_connected_peer();
     let trigger_block = blocks.pop().unwrap();
     let chain_hash = trigger_block.canonical_root();
+    let tip_root = trigger_block.canonical_root();
     rig.trigger_unknown_parent_block(peer_id, trigger_block);
 
     for block in blocks.into_iter().rev() {
@@ -1723,6 +1724,7 @@ fn test_parent_lookup_too_deep_grow_ancestor() {
     // Should not penalize peer, but network is not clear because of the blocks_by_range requests
     rig.expect_no_penalty_for(peer_id);
     rig.assert_failed_chain(chain_hash);
+    rig.assert_not_failed_chain(tip_root);
 }
 
 // Regression test for https://github.com/sigp/lighthouse/pull/7118
@@ -1777,8 +1779,8 @@ fn test_child_lookup_not_created_for_failed_chain_parent_after_processing() {
 
     // THEN: The extending block should not create a lookup because the tip was inserted into failed chains.
     rig.expect_no_active_lookups();
-    // AND: The peer should be penalized for extending a failed chain.
-    rig.expect_single_penalty(peer_id, "failed_chain");
+    // AND: The peer should NOT be penalized for extending a long chain.
+    rig.expect_no_penalty_for(peer_id);
     rig.expect_empty_network();
 }
 
