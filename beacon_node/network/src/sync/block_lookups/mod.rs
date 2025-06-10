@@ -117,6 +117,9 @@ pub struct BlockLookups<T: BeaconChainTypes> {
     // TODO: Why not index lookups by block_root?
     single_block_lookups: FnvHashMap<SingleLookupId, SingleBlockLookup<T>>,
 
+    /// A cache of long chain lookups to prevent duplicate searches without penalizing peers.
+    long_chains: LRUTimeCache<Hash256>,
+
     /// The logger for the import manager.
     log: Logger,
 }
@@ -135,6 +138,9 @@ impl<T: BeaconChainTypes> BlockLookups<T> {
             failed_chains: LRUTimeCache::new(Duration::from_secs(
                 FAILED_CHAINS_CACHE_EXPIRY_SECONDS,
             )),
+            long_chains: LRUTimeCache::new(Duration::from_secs(
+                FAILED_CHAINS_CACHE_EXPIRY_SECONDS,
+            )),
             single_block_lookups: Default::default(),
             log,
         }
@@ -148,6 +154,16 @@ impl<T: BeaconChainTypes> BlockLookups<T> {
     #[cfg(test)]
     pub(crate) fn get_failed_chains(&mut self) -> Vec<Hash256> {
         self.failed_chains.keys().cloned().collect()
+    }
+
+    #[cfg(test)]
+    pub(crate) fn insert_long_chain(&mut self, block_root: Hash256) {
+        self.long_chains.insert(block_root);
+    }
+
+    #[cfg(test)]
+    pub(crate) fn get_long_chains(&mut self) -> Vec<Hash256> {
+        self.long_chains.keys().cloned().collect()
     }
 
     #[cfg(test)]
@@ -330,6 +346,10 @@ impl<T: BeaconChainTypes> BlockLookups<T> {
             for peer_id in peers {
                 cx.report_peer(*peer_id, PeerAction::MidToleranceError, "failed_chain");
             }
+            return false;
+        } else if self.long_chains.contains(&block_root) {
+            debug!(self.log, "Block is from a past long chain. Dropping without penalty"; "block_root" => ?block_root);
+            // Don't penalize peers for extending long chains
             return false;
         }
 

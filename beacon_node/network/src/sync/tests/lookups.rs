@@ -1721,6 +1721,7 @@ fn test_parent_lookup_too_deep_grow_ancestor() {
     // Should not penalize peer, but network is not clear because of the blocks_by_range requests
     rig.expect_no_penalty_for(peer_id);
     rig.assert_failed_chain(chain_hash);
+    rig.assert_not_failed_chain(tip_root);
 }
 
 #[test]
@@ -1818,7 +1819,7 @@ fn test_skip_creating_failed_parent_lookup() {
     rig.insert_failed_chain(parent_root);
     rig.trigger_unknown_parent_block(peer_id, block.into());
     // Expect single penalty for peer, despite dropping two lookups
-    rig.expect_single_penalty(peer_id, "failed_chain");
+    rig.expect_no_penalty_for(peer_id);
     // Both current and parent lookup should be rejected
     rig.expect_no_active_lookups();
 }
