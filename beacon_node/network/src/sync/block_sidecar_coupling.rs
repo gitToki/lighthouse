@@ -234,7 +234,6 @@ impl<E: EthSpec> RangeBlockComponentsRequest<E> {
         // Group data columns by block_root and index
         let mut custody_columns_by_block = HashMap::<Hash256, Vec<CustodyDataColumn<E>>>::new();
         let mut block_roots_by_slot = HashMap::<Slot, HashSet<Hash256>>::new();
-        let expected_custody_indices = expected_custody_columns.keys().cloned().collect::<Vec<_>>();
 
         for column in data_columns {
             let block_root = column.block_root();
@@ -273,14 +272,8 @@ impl<E: EthSpec> RangeBlockComponentsRequest<E> {
                     .remove(&block_root)
                     .unwrap_or_default();
 
-                RpcBlock::new_with_custody_columns(
-                    Some(block_root),
-                    block,
-                    custody_columns,
-                    expected_custody_indices.clone(),
-                    spec,
-                )
-                .map_err(|e| format!("{e:?}"))
+                RpcBlock::new_with_custody_columns(Some(block_root), block, custody_columns, spec)
+                    .map_err(|e| format!("{e:?}"))
             })
             .collect::<Result<Vec<_>, _>>()?;
 

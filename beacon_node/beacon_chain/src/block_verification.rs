@@ -704,7 +704,6 @@ pub struct GossipVerifiedBlock<T: BeaconChainTypes> {
     pub block_root: Hash256,
     parent: Option<PreProcessingSnapshot<T::EthSpec>>,
     consensus_context: ConsensusContext<T::EthSpec>,
-    custody_columns_count: usize,
 }
 
 /// A wrapper around a `SignedBeaconBlock` that indicates that all signatures (except the deposit
@@ -740,7 +739,6 @@ pub trait IntoGossipVerifiedBlock<T: BeaconChainTypes>: Sized {
     fn into_gossip_verified_block(
         self,
         chain: &BeaconChain<T>,
-        custody_columns_count: usize,
     ) -> Result<GossipVerifiedBlock<T>, BlockError>;
     fn inner_block(&self) -> Arc<SignedBeaconBlock<T::EthSpec>>;
 }
@@ -749,7 +747,6 @@ impl<T: BeaconChainTypes> IntoGossipVerifiedBlock<T> for GossipVerifiedBlock<T> 
     fn into_gossip_verified_block(
         self,
         _chain: &BeaconChain<T>,
-        _custody_columns_count: usize,
     ) -> Result<GossipVerifiedBlock<T>, BlockError> {
         Ok(self)
     }
@@ -762,9 +759,8 @@ impl<T: BeaconChainTypes> IntoGossipVerifiedBlock<T> for Arc<SignedBeaconBlock<T
     fn into_gossip_verified_block(
         self,
         chain: &BeaconChain<T>,
-        custody_columns_count: usize,
     ) -> Result<GossipVerifiedBlock<T>, BlockError> {
-        GossipVerifiedBlock::new(self, chain, custody_columns_count)
+        GossipVerifiedBlock::new(self, chain)
     }
 
     fn inner_block(&self) -> Arc<SignedBeaconBlock<T::EthSpec>> {
@@ -840,7 +836,6 @@ impl<T: BeaconChainTypes> GossipVerifiedBlock<T> {
     pub fn new(
         block: Arc<SignedBeaconBlock<T::EthSpec>>,
         chain: &BeaconChain<T>,
-        custody_columns_count: usize,
     ) -> Result<Self, BlockError> {
         // If the block is valid for gossip we don't supply it to the slasher here because
         // we assume it will be transformed into a fully verified block. We *do* need to supply
@@ -850,14 +845,12 @@ impl<T: BeaconChainTypes> GossipVerifiedBlock<T> {
         // The `SignedBeaconBlock` and `SignedBeaconBlockHeader` have the same canonical root,
         // but it's way quicker to calculate root of the header since the hash of the tree rooted
         // at `BeaconBlockBody` is already computed in the header.
-        Self::new_without_slasher_checks(block, &header, chain, custody_columns_count).map_err(
-            |e| {
-                process_block_slash_info::<_, BlockError>(
-                    chain,
-                    BlockSlashInfo::from_early_error_block(header, e),
-                )
-            },
-        )
+        Self::new_without_slasher_checks(block, &header, chain).map_err(|e| {
+            process_block_slash_info::<_, BlockError>(
+                chain,
+                BlockSlashInfo::from_early_error_block(header, e),
+            )
+        })
     }
 
     /// As for new, but doesn't pass the block to the slasher.
@@ -865,7 +858,6 @@ impl<T: BeaconChainTypes> GossipVerifiedBlock<T> {
         block: Arc<SignedBeaconBlock<T::EthSpec>>,
         block_header: &SignedBeaconBlockHeader,
         chain: &BeaconChain<T>,
-        custody_columns_count: usize,
     ) -> Result<Self, BlockError> {
         // Ensure the block is the correct structure for the fork at `block.slot()`.
         block
@@ -1073,7 +1065,6 @@ impl<T: BeaconChainTypes> GossipVerifiedBlock<T> {
             block_root,
             parent,
             consensus_context,
-            custody_columns_count,
         })
     }
 
@@ -1221,7 +1212,6 @@ impl<T: BeaconChainTypes> SignatureVerifiedBlock<T> {
                 block: MaybeAvailableBlock::AvailabilityPending {
                     block_root: from.block_root,
                     block,
-                    custody_columns_count: from.custody_columns_count,
                 },
                 block_root: from.block_root,
                 parent: Some(parent),

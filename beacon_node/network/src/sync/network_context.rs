@@ -478,7 +478,7 @@ impl<T: BeaconChainTypes> SyncNetworkContext<T> {
         // Attempt to find all required custody peers before sending any request or creating an ID
         let columns_by_range_peers_to_request =
             if matches!(batch_type, ByRangeRequestType::BlocksAndColumns) {
-                let column_indexes = self.network_globals().sampling_columns.clone();
+                let column_indexes = self.network_globals().sampling_columns();
                 Some(self.select_columns_by_range_peers_to_request(
                     &column_indexes,
                     peers,
@@ -927,8 +927,7 @@ impl<T: BeaconChainTypes> SyncNetworkContext<T> {
         // Include only the blob indexes not yet imported (received through gossip)
         let custody_indexes_to_fetch = self
             .network_globals()
-            .sampling_columns
-            .clone()
+            .sampling_columns()
             .into_iter()
             .filter(|index| !custody_indexes_imported.contains(index))
             .collect::<Vec<_>>();
@@ -1486,11 +1485,7 @@ impl<T: BeaconChainTypes> SyncNetworkContext<T> {
             .beacon_processor_if_enabled()
             .ok_or(SendErrorProcessor::ProcessorNotAvailable)?;
 
-        let block = RpcBlock::new_without_blobs(
-            Some(block_root),
-            block,
-            self.network_globals().custody_columns_count() as usize,
-        );
+        let block = RpcBlock::new_without_blobs(Some(block_root), block);
 
         debug!(block = ?block_root, id, "Sending block for processing");
         // Lookup sync event safety: If `beacon_processor.send_rpc_beacon_block` returns Ok() sync
