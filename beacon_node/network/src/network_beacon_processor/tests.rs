@@ -285,7 +285,7 @@ impl TestRig {
                 )
                 .unwrap()
                 .into_iter()
-                .filter(|c| network_globals.sampling_columns.contains(&c.index))
+                .filter(|c| network_globals.sampling_columns().contains(&c.index))
                 .collect::<Vec<_>>();
 
                 (None, Some(custody_columns))
@@ -371,22 +371,12 @@ impl TestRig {
         }
     }
 
-    pub fn custody_columns_count(&self) -> usize {
-        self.network_beacon_processor
-            .network_globals
-            .custody_columns_count() as usize
-    }
-
     pub fn enqueue_rpc_block(&self) {
         let block_root = self.next_block.canonical_root();
         self.network_beacon_processor
             .send_rpc_beacon_block(
                 block_root,
-                RpcBlock::new_without_blobs(
-                    Some(block_root),
-                    self.next_block.clone(),
-                    self.custody_columns_count(),
-                ),
+                RpcBlock::new_without_blobs(Some(block_root), self.next_block.clone()),
                 std::time::Duration::default(),
                 BlockProcessType::SingleBlock { id: 0 },
             )
@@ -398,11 +388,7 @@ impl TestRig {
         self.network_beacon_processor
             .send_rpc_beacon_block(
                 block_root,
-                RpcBlock::new_without_blobs(
-                    Some(block_root),
-                    self.next_block.clone(),
-                    self.custody_columns_count(),
-                ),
+                RpcBlock::new_without_blobs(Some(block_root), self.next_block.clone()),
                 std::time::Duration::default(),
                 BlockProcessType::SingleBlock { id: 1 },
             )
@@ -741,6 +727,10 @@ async fn import_gossip_block_acceptably_early() {
     for i in 0..num_data_columns {
         rig.enqueue_gossip_data_columns(i);
         rig.assert_event_journal_completes(&[WorkType::GossipDataColumnSidecar])
+            .await;
+    }
+    if num_data_columns > 0 {
+        rig.assert_event_journal_completes(&[WorkType::ColumnReconstruction])
             .await;
     }
 
