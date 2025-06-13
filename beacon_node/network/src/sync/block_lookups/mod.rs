@@ -170,6 +170,17 @@ impl<T: BeaconChainTypes> BlockLookups<T> {
         name = "lookup_sync",
         skip_all
     )]
+    pub(crate) fn get_long_chains(&mut self) -> Vec<Hash256> {
+        self.long_chains.keys().cloned().collect()
+    }
+
+    #[cfg(test)]
+    #[instrument(parent = None,
+        level = "info",
+        fields(service = "lookup_sync"),
+        name = "lookup_sync",
+        skip_all
+    )]
     pub(crate) fn active_single_lookups(&self) -> Vec<BlockLookupSummary> {
         self.single_block_lookups
             .iter()
@@ -761,6 +772,17 @@ impl<T: BeaconChainTypes> BlockLookups<T> {
                                     }
                                 },
                             );
+                        }
+
+                        // Check if this lookup has too many processing failures AFTER penalizing
+                        if request_state.more_failed_processing_attempts()
+                            && request_state.failed_attempts() >= SINGLE_BLOCK_LOOKUP_MAX_ATTEMPTS
+                        {
+                            // Blacklist this chain due to repeated processing failures
+                            self.failed_chains.insert(block_root);
+                            return Err(LookupRequestError::TooManyAttempts {
+                                cannot_process: true,
+                            });
                         }
 
                         Action::Retry

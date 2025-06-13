@@ -331,6 +331,13 @@ impl TestRig {
         }
     }
 
+    fn assert_long_chain(&mut self, chain_hash: Hash256) {
+        let long_chains = self.sync_manager.get_long_chains();
+        if !long_chains.contains(&chain_hash) {
+            panic!("expected long chains to contain {chain_hash:?}: {long_chains:?}");
+        }
+    }
+
     fn find_single_lookup_for(&self, block_root: Hash256) -> Id {
         self.active_single_lookups()
             .iter()
@@ -1679,7 +1686,8 @@ fn test_parent_lookup_too_many_processing_attempts_must_blacklist() {
         rig.expect_penalty(peer_id, "lookup_block_processing_failure");
     }
 
-    rig.assert_not_failed_chain(block_root);
+    // Tests that chains that fail due to processing errors (not just length) are blacklisted with penalties
+    rig.assert_failed_chain(parent_root);
     rig.expect_no_active_lookups_empty_network();
 }
 
@@ -1723,13 +1731,33 @@ fn test_parent_lookup_too_deep_grow_ancestor() {
     );
     // Should not penalize peer, but network is not clear because of the blocks_by_range requests
     rig.expect_no_penalty_for(peer_id);
-    rig.assert_failed_chain(chain_hash);
-    rig.assert_not_failed_chain(tip_root);
+    rig.assert_long_chain(chain_hash);
 }
 
 // Regression test for https://github.com/sigp/lighthouse/pull/7118
+// Test for actual failed chains (with penalty)
 #[test]
 fn test_child_lookup_not_created_for_failed_chain_parent_after_processing() {
+    // GIVEN: A parent chain that actually fails due to processing errors
+    let mut rig = TestRig::test_setup();
+    let (_, block, parent_root, _) = rig.rand_block_and_parent();
+    let peer_id = rig.new_connected_peer();
+
+    // Insert a truly failed chain (not just long)
+    rig.insert_failed_chain(parent_root);
+
+    // WHEN: Trigger a block that references the failed parent
+    rig.trigger_unknown_parent_block(peer_id, block.into());
+
+    // THEN: Should penalize peer for extending failed chain
+    rig.expect_single_penalty(peer_id, "failed_chain");
+    // AND: Should reject the lookup
+    rig.expect_no_active_lookups();
+}
+
+// Test for long chains (without penalty)
+#[test]
+fn test_child_lookup_not_created_for_long_chain_parent_after_processing() {
     // GIVEN: A parent chain longer than PARENT_DEPTH_TOLERANCE.
     let mut rig = TestRig::test_setup();
     let mut blocks = rig.rand_blockchain(PARENT_DEPTH_TOLERANCE + 1);
@@ -1758,9 +1786,9 @@ fn test_child_lookup_not_created_for_failed_chain_parent_after_processing() {
         );
     }
 
-    // At this point, the chain should have been deemed too deep and pruned.
-    // The tip root should have been inserted into failed chains.
-    rig.assert_failed_chain(tip_root);
+    // At this point, the chain should have been deemed too long and pruned.
+    // The tip root should have been inserted into long chains (not failed chains).
+    rig.assert_long_chain(tip_root);
     rig.expect_no_penalty_for(peer_id);
 
     // WHEN: Trigger the extending block that points to the tip.
@@ -1777,7 +1805,7 @@ fn test_child_lookup_not_created_for_failed_chain_parent_after_processing() {
         }),
     );
 
-    // THEN: The extending block should not create a lookup because the tip was inserted into failed chains.
+    // THEN: The extending block should not create a lookup because the tip was inserted into long chains.
     rig.expect_no_active_lookups();
     // AND: The peer should NOT be penalized for extending a long chain.
     rig.expect_no_penalty_for(peer_id);
@@ -1819,7 +1847,7 @@ fn test_parent_lookup_too_deep_grow_tip() {
     );
     // Should not penalize peer, but network is not clear because of the blocks_by_range requests
     rig.expect_no_penalty_for(peer_id);
-    rig.assert_failed_chain(tip.canonical_root());
+    rig.assert_long_chain(tip.canonical_root());
 }
 
 #[test]

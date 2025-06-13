@@ -1351,6 +1351,11 @@ impl<T: BeaconChainTypes> SyncManager<T> {
             }
         }
     }
+
+    #[cfg(test)]
+    pub(crate) fn get_long_chains(&mut self) -> Vec<Hash256> {
+        self.block_lookups.get_long_chains()
+    }
 }
 
 impl From<Result<AvailabilityProcessingStatus, BlockError>> for BlockProcessingResult {
