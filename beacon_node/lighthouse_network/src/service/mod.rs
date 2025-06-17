@@ -40,8 +40,11 @@ use std::pin::Pin;
 use std::sync::Arc;
 use std::time::Duration;
 use tracing::{debug, info, instrument, trace, warn};
+use std::collections::HashMap;
+use tokio::time::{sleep, Duration as TokioDuration};
 use types::{
     consts::altair::SYNC_COMMITTEE_SUBNET_COUNT, EnrForkId, EthSpec, ForkContext, Slot, SubnetId,
+    ColumnIndex, DataColumnSidecar, DataColumnSubnetId, Hash256, SignedBeaconBlock,
 };
 use types::{ChainSpec, ForkName};
 use utils::{build_transport, strip_peer_id, Context as ServiceContext};
@@ -164,6 +167,12 @@ pub struct Network<E: EthSpec> {
     gossip_cache: GossipCache,
     /// This node's PeerId.
     pub local_peer_id: PeerId,
+    /// Cache for recent column dissemination to avoid duplicates
+    recent_disseminations: HashMap<(Hash256, ColumnIndex), std::time::Instant>,
+    /// Callback for retrieving column data from external sources
+    column_data_provider: Option<Box<dyn Fn(Hash256, ColumnIndex) -> Option<Arc<DataColumnSidecar<E>>> + Send + Sync>>,
+    /// Callback for checking if we are the proposer
+    proposer_checker: Option<Box<dyn Fn(&SignedBeaconBlock<E>) -> bool + Send + Sync>>,
 }
 
 /// Implements the combined behaviour for the libp2p service.
@@ -517,6 +526,9 @@ impl<E: EthSpec> Network<E> {
             update_gossipsub_scores,
             gossip_cache,
             local_peer_id,
+            recent_disseminations: HashMap::new(),
+            column_data_provider: None,
+            proposer_checker: None,
         };
 
         network.start(&config).await?;
@@ -524,6 +536,22 @@ impl<E: EthSpec> Network<E> {
         let network_globals = network.network_globals.clone();
 
         Ok((network, network_globals))
+    }
+
+    /// Set column data provider callback
+    pub fn set_column_data_provider<F>(&mut self, provider: F)
+    where
+        F: Fn(Hash256, ColumnIndex) -> Option<Arc<DataColumnSidecar<E>>> + Send + Sync + 'static,
+    {
+        self.column_data_provider = Some(Box::new(provider));
+    }
+    
+    /// Set proposer checker callback
+    pub fn set_proposer_checker<F>(&mut self, checker: F)
+    where
+        F: Fn(&SignedBeaconBlock<E>) -> bool + Send + Sync + 'static,
+    {
+        self.proposer_checker = Some(Box::new(checker));
     }
 
     /// Starts the network:
@@ -1547,6 +1575,251 @@ impl<E: EthSpec> Network<E> {
             .disconnect_peer(enr.peer_id(), GoodbyeReason::TooManyPeers);
     }
 
+    /* Distributed Column Dissemination */
+
+    fn disseminate_custody_columns_now(&mut self, block_root: Hash256) {
+        let my_custody_columns = self.network_globals.sampling_columns();
+        
+        if my_custody_columns.is_empty() {
+            debug!("No custody columns to disseminate");
+            return;
+        }
+        
+        let mut disseminated_count = 0;
+        let mut failed_count = 0;
+        let now = std::time::Instant::now();
+        
+        for column_index in my_custody_columns.clone() {
+            let cache_key = (block_root, column_index);
+            
+            // Verify if we disseminate before
+            if let Some(last_sent) = self.recent_disseminations.get(&cache_key) {
+                if now.duration_since(*last_sent) < Duration::from_secs(60) {
+                    trace!(
+                        %block_root,
+                        %column_index,
+                        "Skipping column dissemination - recently sent"
+                    );
+                    continue;
+                }
+            }
+            
+            // get and disseminate column
+            match self.get_custody_column_data(block_root, column_index) {
+                Some(column_data) => {
+                    let subnet_id = DataColumnSubnetId::new(column_index);
+                    let message = PubsubMessage::DataColumnSidecar(Box::new((subnet_id, column_data)));
+                    
+                    self.publish(vec![message]);
+                    self.recent_disseminations.insert(cache_key, now);
+                    disseminated_count += 1;
+                    
+                    trace!(
+                        %block_root,
+                        %column_index,
+                        subnet_id = %subnet_id,
+                        "Successfully disseminated custody column"
+                    );
+                }
+                None => {
+                    failed_count += 1;
+                    debug!(
+                        %block_root,
+                        %column_index,
+                        "Failed to get custody column data for dissemination"
+                    );
+                }
+            }
+        }
+        
+        if disseminated_count > 0 || failed_count > 0 {
+            info!(
+                %block_root,
+                disseminated_count = %disseminated_count,
+                failed_count = %failed_count,
+                total_custody_columns = %my_custody_columns.len(),
+                "Column dissemination completed"
+            );
+        }
+    }
+
+    /// Triggers distributed column dissemination when receiving a beacon block.
+    /// Each node will disseminate only its custody columns to reduce proposer bandwidth.
+    #[instrument(parent = None,
+        level = "trace",
+        fields(service = "libp2p"),
+        name = "libp2p",
+        skip_all
+    )]
+    fn trigger_distributed_column_dissemination(&mut self, block: &SignedBeaconBlock<E>) {
+        if !self.should_disseminate_custody_columns(block) {
+            return;
+        }
+    
+        let block_root = block.canonical_root();
+        self.disseminate_custody_columns_now(block_root);
+    }
+
+    fn cleanup_dissemination_cache(&mut self) {
+        let now = std::time::Instant::now();
+        self.recent_disseminations.retain(|_key, last_sent| {
+            now.duration_since(*last_sent) < std::time::Duration::from_secs(300)
+        });
+    }
+
+    /// Determines if this node should disseminate its custody columns for the given block.
+    /// Returns false if we are the proposer (already sent columns) or if conditions aren't met.
+    #[instrument(parent = None,
+        level = "trace",
+        fields(service = "libp2p"),
+        name = "libp2p",
+        skip_all
+    )]
+    fn should_disseminate_custody_columns(&self, block: &SignedBeaconBlock<E>) -> bool {
+        let config = &self.network_globals.config;
+        if !config.enable_distributed_column_dissemination {
+            trace!("Distributed column dissemination disabled in config");
+            return false;
+        }
+    
+        if self.column_data_provider.is_none() {
+            warn!("Distributed column dissemination enabled but no data provider configured");
+            return false;
+        }
+    
+        // Don't disseminate if we don't have any custody columns
+        if self.network_globals.sampling_columns().is_empty() {
+            debug!(
+                block_root = %block.canonical_root(),
+                "No custody columns assigned, skipping dissemination"
+            );
+            return false;
+        }
+    
+        // Don't disseminate if the block is too old
+        if !self.is_block_recent_enough(block) {
+            debug!(
+                block_root = %block.canonical_root(),
+                block_slot = %block.slot(),
+                "Block too old for column dissemination"
+            );
+            return false;
+        }
+    
+        // Don't disseminate if we are the proposer
+        if self.is_local_proposer(block) {
+            debug!(
+                block_root = %block.canonical_root(),
+                "Skipping column dissemination - we are the proposer"
+            );
+            return false;
+        }
+    
+        true
+    }
+
+    /// Retrieves column data for a specific block and column index.
+    /// This attempts to get the column from the data availability checker.
+    #[instrument(parent = None,
+        level = "trace",
+        fields(service = "libp2p"),
+        name = "libp2p",
+        skip_all
+    )]
+    fn get_custody_column_data(&self, block_root: Hash256, column_index: ColumnIndex) -> Option<Arc<DataColumnSidecar<E>>> {
+        if let Some(provider) = &self.column_data_provider {
+            match provider(block_root, column_index) {
+                Some(data) => {
+                    trace!(
+                        %block_root,
+                        %column_index,
+                        "Successfully retrieved custody column data"
+                    );
+                    Some(data)
+                }
+                None => {
+                    debug!(
+                        %block_root,
+                        %column_index,
+                        "No custody column data available from provider"
+                    );
+                    None
+                }
+            }
+        } else {
+            warn!(
+                %block_root,
+                %column_index,
+                "Column data provider not configured for distributed dissemination"
+            );
+            None
+        }
+    }
+
+    /// Checks if a block is recent enough to warrant column dissemination.
+    /// Returns false if the block is older than 18 days.
+    #[instrument(parent = None,
+        level = "trace",
+        fields(service = "libp2p"),
+        name = "libp2p",
+        skip_all
+    )]
+    fn is_block_recent_enough(&self, block: &SignedBeaconBlock<E>) -> bool {
+        const MAX_SLOTS_18_DAYS: u64 = 18 * 24 * 60 * 60 / 12; // ~129600 slots for 18 days
+        
+        // Simple estimation of current slot based on system time
+        let now = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap_or_default()
+            .as_secs();
+        
+        // Rough estimation (you can adjust the base according to your network)
+        let estimated_current_slot = now / self.fork_context.spec.seconds_per_slot;
+        
+        let block_slot = block.slot().as_u64();
+        let slot_diff = estimated_current_slot.saturating_sub(block_slot);
+        
+        let is_recent = slot_diff <= MAX_SLOTS_18_DAYS;
+        
+        trace!(
+            estimated_current_slot = %estimated_current_slot,
+            block_slot = %block_slot,
+            slot_diff = %slot_diff,
+            estimated_age_days = %(slot_diff * self.fork_context.spec.seconds_per_slot / (24 * 60 * 60)),
+            is_recent = %is_recent,
+            "Checked if block is recent enough for column dissemination"
+        );
+        
+        is_recent
+    }
+
+    /// Determines if this node was the proposer for the given block.
+    /// Returns true if our local validator proposed this block.
+    #[instrument(parent = None,
+        level = "trace",
+        fields(service = "libp2p"),
+        name = "libp2p",
+        skip_all
+    )]
+    fn is_local_proposer(&self, block: &SignedBeaconBlock<E>) -> bool {
+        if let Some(checker) = &self.proposer_checker {
+            let is_proposer = checker(block);
+            trace!(
+                block_root = %block.canonical_root(),
+                slot = %block.slot(),
+                is_local_proposer = %is_proposer,
+                "Checked if we are the block proposer"
+            );
+            is_proposer
+        } else {
+            debug!(
+                block_root = %block.canonical_root(),
+                "Proposer checker not configured, assuming we are not the proposer"
+            );
+            false
+        }
+    }
+
     /* Sub-behaviour event handling functions */
 
     /// Handle a gossipsub event.
@@ -1576,6 +1849,11 @@ impl<E: EthSpec> Network<E> {
                         );
                     }
                     Ok(msg) => {
+                        // Trigger distributed column dissemination when we receive a beacon block
+                        if let PubsubMessage::BeaconBlock(ref block) = msg {
+                            self.trigger_distributed_column_dissemination(block);
+                        }
+            
                         // Notify the network
                         return Some(NetworkEvent::PubsubMessage {
                             id,
@@ -2157,8 +2435,47 @@ impl<E: EthSpec> Network<E> {
                         }
                     }
                 }
+                _ = tokio::time::sleep(Duration::from_secs(60)) => {
+                    self.cleanup_dissemination_cache();
+                }
             }
         }
+    }
+
+    /// Configure column data provider for distributed dissemination
+    pub fn configure_column_provider<F>(&mut self, provider: F)
+    where
+        F: Fn(Hash256, ColumnIndex) -> Option<Arc<DataColumnSidecar<E>>> + Send + Sync + 'static,
+    {
+        self.set_column_data_provider(provider);
+    }
+
+    /// Configure proposer checker for distributed dissemination
+    pub fn configure_proposer_checker<F>(&mut self, checker: F)
+    where
+        F: Fn(&SignedBeaconBlock<E>) -> bool + Send + Sync + 'static,
+    {
+        self.set_proposer_checker(checker);
+    }
+
+    pub fn ensure_column_dissemination_configured(&self) -> Result<(), String> {
+        let config = &self.network_globals.config;
+        
+        if config.enable_distributed_column_dissemination {
+            if self.column_data_provider.is_none() {
+                return Err("Distributed column dissemination enabled but no data provider configured. Call set_column_data_provider() first.".to_string());
+            }
+            
+            if self.proposer_checker.is_none() {
+                warn!("No proposer checker configured - will never skip dissemination for own proposals");
+            }
+            
+            if self.network_globals.sampling_columns().is_empty() {
+                warn!("No custody columns assigned - node will not disseminate any columns");
+            }
+        }
+        
+        Ok(())
     }
 
     #[instrument(parent = None,

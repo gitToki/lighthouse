@@ -15,6 +15,7 @@ use std::path::PathBuf;
 use std::sync::Arc;
 use std::time::Duration;
 use types::ForkContext;
+pub use types::DataColumnSubnetId;
 
 pub const DEFAULT_IPV4_ADDRESS: Ipv4Addr = Ipv4Addr::UNSPECIFIED;
 pub const DEFAULT_TCP_PORT: u16 = 9000u16;
@@ -117,6 +118,15 @@ pub struct Config {
 
     /// List of extra topics to initially subscribe to as strings.
     pub topics: Vec<GossipKind>,
+
+    /// Enable distributed column dissemination to reduce proposer bandwidth.
+    /// When enabled, each node will disseminate only its custody columns
+    /// instead of requiring the proposer to send all columns.
+    pub enable_distributed_column_dissemination: bool,
+
+    /// Delay in milliseconds before disseminating custody columns after receiving a block.
+    /// This prevents network congestion by staggering column dissemination.
+    pub column_dissemination_delay_ms: u64,
 
     /// Whether we are running a block proposer only node.
     pub proposer_only: bool,
@@ -356,6 +366,8 @@ impl Default for Config {
             import_all_attestations: false,
             shutdown_after_sync: false,
             topics: Vec::new(),
+            enable_distributed_column_dissemination: true,
+            column_dissemination_delay_ms: 250,
             proposer_only: false,
             metrics_enabled: false,
             enable_light_client_server: true,
