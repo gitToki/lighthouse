@@ -35,7 +35,7 @@ use tokio::sync::mpsc;
 use tracing::{debug, error, info, trace, warn};
 use types::{
     beacon_block::BlockImportSource, Attestation, AttestationData, AttestationRef,
-    AttesterSlashing, BlobSidecar, DataColumnSidecar, DataColumnSubnetId, EthSpec, Hash256,
+    AttesterSlashing, BlobSidecar, DataColumnSidecar, PartialDataColumnSidecar, DataColumnSubnetId, EthSpec, Hash256,
     IndexedAttestation, LightClientFinalityUpdate, LightClientOptimisticUpdate, ProposerSlashing,
     SignedAggregateAndProof, SignedBeaconBlock, SignedBlsToExecutionChange,
     SignedContributionAndProof, SignedVoluntaryExit, SingleAttestation, Slot, SubnetId,
@@ -893,6 +893,56 @@ impl<T: BeaconChainTypes> NetworkBeaconProcessor<T> {
                         );
                     }
                 }
+            }
+        }
+    }
+
+    pub async fn process_gossip_partial_data_column_sidecar(
+        self: &Arc<Self>,
+        message_id: MessageId,
+        peer_id: PeerId,
+        _peer_client: Client,
+        subnet_id: DataColumnSubnetId,
+        partial_column_sidecar: Arc<PartialDataColumnSidecar<T::EthSpec>>,
+        seen_duration: Duration,
+    ) {
+        let slot = partial_column_sidecar.slot();
+        let block_root = partial_column_sidecar.block_root();
+        let index = partial_column_sidecar.index;
+        let cell_count = partial_column_sidecar.metadata.cell_indices.len();
+        
+        debug!(
+            %slot,
+            %block_root,
+            %index,
+            %cell_count,
+            "Processing partial data column sidecar"
+        );
+    
+        // Store the partial column and attempt reconstruction
+        match self
+            .chain
+            .store_partial_data_column_and_reconstruct(partial_column_sidecar.clone(), subnet_id)
+            .await
+        {
+            Ok(_) => {
+                self.propagate_validation_result(message_id, peer_id, MessageAcceptance::Accept);
+                debug!(
+                    %slot,
+                    %block_root,
+                    %index,
+                    "Partial column stored successfully"
+                );
+            }
+            Err(err) => {
+                debug!(
+                    error = ?err,
+                    %slot,
+                    %block_root,
+                    %index,
+                    "Failed to store partial data column sidecar"
+                );
+                self.propagate_validation_result(message_id, peer_id, MessageAcceptance::Reject);
             }
         }
     }

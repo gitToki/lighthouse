@@ -304,6 +304,36 @@ impl<T: BeaconChainTypes> NetworkBeaconProcessor<T> {
         })
     }
 
+    /// Create a new `Work` event for some partial data column sidecar.
+    pub fn send_gossip_partial_data_column_sidecar(
+        self: &Arc<Self>,
+        message_id: MessageId,
+        peer_id: PeerId,
+        peer_client: Client,
+        subnet_id: DataColumnSubnetId,
+        partial_column_sidecar: Arc<PartialDataColumnSidecar<T::EthSpec>>,
+        seen_timestamp: Duration,
+    ) -> Result<(), Error<T::EthSpec>> {
+        let processor = self.clone();
+        let process_fn = async move {
+            processor
+                .process_gossip_partial_data_column_sidecar(
+                    message_id,
+                    peer_id,
+                    peer_client,
+                    subnet_id,
+                    partial_column_sidecar,
+                    seen_timestamp,
+                )
+                .await
+        };
+
+        self.try_send(BeaconWorkEvent {
+            drop_during_sync: false,
+            work: Work::GossipPartialDataColumnSidecar(Box::pin(process_fn)),
+        })
+    }
+
     /// Create a new `Work` event for some sync committee signature.
     pub fn send_gossip_sync_signature(
         self: &Arc<Self>,
@@ -1063,6 +1093,7 @@ impl<T: BeaconChainTypes> NetworkBeaconProcessor<T> {
     }
 
     /// This function gradually publishes data columns to the network in randomised batches.
+    /// If partial column dissemination is enabled, it sends partial columns instead of full ones.
     ///
     /// This is an optimisation to reduce outbound bandwidth and ensures each column is published
     /// by some nodes on the network as soon as possible. Our hope is that some columns arrive from
@@ -1078,17 +1109,64 @@ impl<T: BeaconChainTypes> NetworkBeaconProcessor<T> {
         self.executor.spawn(
             async move {
                 let chain = self_clone.chain.clone();
-                let publish_fn = |columns: DataColumnSidecarList<T::EthSpec>| {
-                    self_clone.send_network_message(NetworkMessage::Publish {
-                        messages: columns
+                let chain_for_partial = chain.clone();
+                let chain_for_full = chain.clone();
+                let cells_per_message = chain.config.partial_column_cells_per_message;
+                let enable_partial = chain.config.enable_partial_column_dissemination;
+                
+                let publish_fn: Box<dyn Fn(DataColumnSidecarList<T::EthSpec>) + Send + Sync> = 
+                if enable_partial {
+                    Box::new(move |columns: DataColumnSidecarList<T::EthSpec>| {
+                        let partial_messages: Vec<_> = columns
                             .into_iter()
-                            .map(|d| {
-                                let subnet =
-                                    DataColumnSubnetId::from_column_index(d.index, &chain.spec);
-                                PubsubMessage::DataColumnSidecar(Box::new((subnet, d)))
+                            .filter_map(|column| {
+                                let total_cells = column.column.len();
+                                let cells_per_msg = std::cmp::min(
+                                    cells_per_message,
+                                    total_cells
+                                );
+                                let mut cell_indices: Vec<u64> = (0..total_cells as u64).collect();
+                                cell_indices.shuffle(&mut rand::thread_rng());
+                                cell_indices.truncate(cells_per_msg);
+                                cell_indices.sort();
+                                
+                                match PartialDataColumnSidecar::from_full_column(&column, cell_indices) {
+                                    Ok(partial_column) => {
+                                        let subnet = DataColumnSubnetId::from_column_index(column.index, &chain_for_partial.spec);
+                                        Some(PubsubMessage::PartialDataColumnSidecar(Box::new((
+                                            subnet,
+                                            Arc::new(partial_column)
+                                        ))))
+                                    }
+                                    Err(e) => {
+                                        warn!(
+                                            error = %e,
+                                            column_index = column.index,
+                                            "Failed to create partial column"
+                                        );
+                                        None
+                                    }
+                                }
                             })
-                            .collect(),
-                    });
+                            .collect();
+                        if !partial_messages.is_empty() {
+                            self_clone.send_network_message(NetworkMessage::Publish {
+                                messages: partial_messages,
+                            });
+                        }
+                    })
+                } else {
+                    Box::new(move |columns: DataColumnSidecarList<T::EthSpec>| {
+                        self_clone.send_network_message(NetworkMessage::Publish {
+                            messages: columns
+                                .into_iter()
+                                .map(|d| {
+                                    let subnet = DataColumnSubnetId::from_column_index(d.index, &chain_for_full.spec);
+                                    PubsubMessage::DataColumnSidecar(Box::new((subnet, d)))
+                                })
+                                .collect(),
+                        });
+                    })
                 };
 
                 // Permute the columns and split them into batches.
@@ -1119,8 +1197,15 @@ impl<T: BeaconChainTypes> NetworkBeaconProcessor<T> {
                         .collect::<Vec<_>>();
 
                     if !publishable.is_empty() {
+                        let message_type = if enable_partial {
+                            "partial column"
+                        } else {
+                            "full column"
+                        };
+                        
                         debug!(
                             publish_count = publishable.len(),
+                            message_type,
                             ?block_root,
                             "Publishing data column batch"
                         );
@@ -1131,11 +1216,18 @@ impl<T: BeaconChainTypes> NetworkBeaconProcessor<T> {
                     tokio::time::sleep(blob_publication_batch_interval).await;
                 }
 
+                let message_type = if enable_partial {
+                    "partial"
+                } else {
+                    "full"
+                };
+
                 debug!(
                     batch_size,
                     batch_interval = blob_publication_batch_interval.as_millis(),
                     data_columns_to_publish_count = data_columns_to_publish.len(),
                     publish_count,
+                    message_type,
                     ?block_root,
                     "Batch data column publishing complete"
                 )

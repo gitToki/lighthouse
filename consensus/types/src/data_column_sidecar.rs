@@ -17,7 +17,8 @@ use serde::{Deserialize, Deserializer, Serialize};
 use ssz::{DecodeError, Encode};
 use ssz_derive::{Decode, Encode};
 use ssz_types::Error as SszError;
-use ssz_types::{FixedVector, VariableList};
+use ssz_types::{typenum, FixedVector, VariableList};
+use std::hash::Hash;
 use std::sync::Arc;
 use test_random_derive::TestRandom;
 use tree_hash::TreeHash;
@@ -26,6 +27,18 @@ use tree_hash_derive::TreeHash;
 pub type ColumnIndex = u64;
 pub type Cell<E> = FixedVector<u8, <E as EthSpec>::BytesPerCell>;
 pub type DataColumn<E> = VariableList<Cell<E>, <E as EthSpec>::MaxBlobCommitmentsPerBlock>;
+
+/// A partial data column containing only a subset of cells
+pub type PartialDataColumn<E> = VariableList<Cell<E>, <E as EthSpec>::MaxBlobCommitmentsPerBlock>;
+
+/// Metadata for partial column dissemination
+#[derive(Debug, Clone, Serialize, Deserialize, Encode, Decode, TreeHash, PartialEq, Eq, Hash, TestRandom, arbitrary::Arbitrary)]
+pub struct PartialColumnMetadata {
+    /// Total number of cells in the complete column
+    pub total_cells: u64,
+    /// Indices of the cells included in this partial column
+    pub cell_indices: VariableList<u64, typenum::U512>,
+}
 
 /// Identifies a set of data columns associated with a specific beacon block.
 #[derive(Encode, Clone, Debug, PartialEq, TreeHash)]
@@ -193,6 +206,94 @@ impl<E: EthSpec> DataColumnSidecar<E> {
         }
         .as_ssz_bytes()
         .len()
+    }
+}
+
+/// A sidecar for partial data column dissemination
+#[derive(
+    Debug,
+    Clone,
+    Serialize,
+    Deserialize,
+    Encode,
+    Decode,
+    TreeHash,
+    TestRandom,
+    Derivative,
+    arbitrary::Arbitrary,
+)]
+#[serde(bound = "E: EthSpec")]
+#[arbitrary(bound = "E: EthSpec")]
+#[derivative(PartialEq, Eq, Hash(bound = "E: EthSpec"))]
+#[context_deserialize(ForkName)]
+pub struct PartialDataColumnSidecar<E: EthSpec> {
+    #[serde(with = "serde_utils::quoted_u64")]
+    pub index: ColumnIndex,
+    #[serde(with = "ssz_types::serde_utils::list_of_hex_fixed_vec")]
+    pub partial_column: PartialDataColumn<E>,
+    /// Metadata describing which cells are included
+    pub metadata: PartialColumnMetadata,
+    /// All the KZG commitments and proofs associated with the block, used for verifying sample cells.
+    pub kzg_commitments: KzgCommitments<E>,
+    pub kzg_proofs: VariableList<KzgProof, E::MaxBlobCommitmentsPerBlock>,
+    pub signed_block_header: SignedBeaconBlockHeader,
+    /// An inclusion proof, proving the inclusion of `blob_kzg_commitments` in `BeaconBlockBody`.
+    pub kzg_commitments_inclusion_proof: FixedVector<Hash256, E::KzgCommitmentsInclusionProofDepth>,
+}
+
+impl<E: EthSpec> PartialDataColumnSidecar<E> {
+    pub fn slot(&self) -> Slot {
+        self.signed_block_header.message.slot
+    }
+    
+    pub fn epoch(&self) -> Epoch {
+        self.slot().epoch(E::slots_per_epoch())
+    }
+    
+    pub fn block_root(&self) -> Hash256 {
+        self.signed_block_header.message.tree_hash_root()
+    }
+    
+    /// Create a partial column sidecar from a full column sidecar
+    pub fn from_full_column(
+        full_sidecar: &DataColumnSidecar<E>,
+        cell_indices: Vec<u64>,
+    ) -> Result<Self, String> {
+        let total_cells = full_sidecar.column.len() as u64;
+        
+        // Validate indices
+        for &index in &cell_indices {
+            if index >= total_cells {
+                return Err(format!("Cell index {} out of bounds (total: {})", index, total_cells));
+            }
+        }
+        
+        // Extract the specified cells
+        let partial_cells: Result<Vec<_>, _> = cell_indices
+            .iter()
+            .map(|&index| {
+                full_sidecar.column.get(index as usize)
+                    .cloned()
+                    .ok_or_else(|| format!("Cell at index {} not found", index))
+            })
+            .collect();
+        
+        let partial_column = PartialDataColumn::<E>::from(partial_cells?);
+        
+        let metadata = PartialColumnMetadata {
+            total_cells,
+            cell_indices: VariableList::from(cell_indices),
+        };
+        
+        Ok(PartialDataColumnSidecar {
+            index: full_sidecar.index,
+            partial_column,
+            metadata,
+            kzg_commitments: full_sidecar.kzg_commitments.clone(),
+            kzg_proofs: full_sidecar.kzg_proofs.clone(),
+            signed_block_header: full_sidecar.signed_block_header.clone(),
+            kzg_commitments_inclusion_proof: full_sidecar.kzg_commitments_inclusion_proof.clone(),
+        })
     }
 }
 

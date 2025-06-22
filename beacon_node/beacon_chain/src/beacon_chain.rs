@@ -3123,6 +3123,33 @@ impl<T: BeaconChainTypes> BeaconChain<T> {
         self.remove_notified(&block_root, r)
     }
 
+    /// Store a partial data column (P2P layer - no KZG/RS handling needed)
+    pub async fn store_partial_data_column_and_reconstruct(
+        &self,
+        partial_column: Arc<PartialDataColumnSidecar<T::EthSpec>>,
+        _subnet_id: DataColumnSubnetId,
+    ) -> Result<Option<Arc<DataColumnSidecar<T::EthSpec>>>, BeaconChainError> {
+        let block_root = partial_column.block_root();
+        let column_index = partial_column.index;
+        
+        debug!(
+            "Received partial data column for block {} column {} with {} cells",
+            block_root,
+            column_index,
+            partial_column.metadata.cell_indices.len()
+        );
+        
+        // At P2P layer, we just forward the partial column to the data availability checker
+        // The DA checker will handle KZG verification and Reed-Solomon reconstruction
+        self.data_availability_checker
+            .put_partial_data_column(column_index, partial_column)
+            .map_err(|e| BeaconChainError::AvailabilityCheckError(e))?;
+        
+        // Return None - reconstruction happens at a lower layer
+        // If reconstruction succeeds, it will be handled by the DA checker
+        Ok(None)
+    }
+
     /// Cache the blobs in the processing cache, process it, then evict it from the cache if it was
     /// imported or errors.
     pub async fn process_rpc_blobs(

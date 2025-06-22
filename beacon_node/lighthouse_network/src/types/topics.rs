@@ -16,6 +16,7 @@ pub const BEACON_AGGREGATE_AND_PROOF_TOPIC: &str = "beacon_aggregate_and_proof";
 pub const BEACON_ATTESTATION_PREFIX: &str = "beacon_attestation_";
 pub const BLOB_SIDECAR_PREFIX: &str = "blob_sidecar_";
 pub const DATA_COLUMN_SIDECAR_PREFIX: &str = "data_column_sidecar_";
+pub const PARTIAL_DATA_COLUMN_SIDECAR_PREFIX: &str = "partial_data_column_sidecar_";
 pub const VOLUNTARY_EXIT_TOPIC: &str = "voluntary_exit";
 pub const PROPOSER_SLASHING_TOPIC: &str = "proposer_slashing";
 pub const ATTESTER_SLASHING_TOPIC: &str = "attester_slashing";
@@ -109,6 +110,7 @@ pub fn is_fork_non_core_topic(topic: &GossipTopic, _fork_name: ForkName) -> bool
         | GossipKind::BeaconAggregateAndProof
         | GossipKind::BlobSidecar(_)
         | GossipKind::DataColumnSidecar(_)
+        | GossipKind::PartialDataColumnSidecar(_)
         | GossipKind::VoluntaryExit
         | GossipKind::ProposerSlashing
         | GossipKind::AttesterSlashing
@@ -156,6 +158,8 @@ pub enum GossipKind {
     BlobSidecar(u64),
     /// Topic for publishing DataColumnSidecars.
     DataColumnSidecar(DataColumnSubnetId),
+    /// Topic for publishing partial DataColumnSidecars.
+    PartialDataColumnSidecar(DataColumnSubnetId),
     /// Topic for publishing raw attestations on a particular subnet.
     #[strum(serialize = "beacon_attestation")]
     Attestation(SubnetId),
@@ -190,6 +194,9 @@ impl std::fmt::Display for GossipKind {
             }
             GossipKind::DataColumnSidecar(column_index) => {
                 write!(f, "{}{}", DATA_COLUMN_SIDECAR_PREFIX, **column_index)
+            }
+            GossipKind::PartialDataColumnSidecar(column_index) => {
+                write!(f, "{}{}", PARTIAL_DATA_COLUMN_SIDECAR_PREFIX, **column_index)
             }
             x => f.write_str(x.as_ref()),
         }
@@ -279,6 +286,7 @@ impl GossipTopic {
             GossipKind::Attestation(subnet_id) => Some(Subnet::Attestation(*subnet_id)),
             GossipKind::SyncCommitteeMessage(subnet_id) => Some(Subnet::SyncCommittee(*subnet_id)),
             GossipKind::DataColumnSidecar(subnet_id) => Some(Subnet::DataColumn(*subnet_id)),
+            GossipKind::PartialDataColumnSidecar(subnet_id) => Some(Subnet::DataColumn(*subnet_id)),
             _ => None,
         }
     }
@@ -319,6 +327,9 @@ impl std::fmt::Display for GossipTopic {
             }
             GossipKind::DataColumnSidecar(index) => {
                 format!("{}{}", DATA_COLUMN_SIDECAR_PREFIX, *index)
+            }
+            GossipKind::PartialDataColumnSidecar(index) => {
+                format!("{}{}", PARTIAL_DATA_COLUMN_SIDECAR_PREFIX, *index)
             }
             GossipKind::BlsToExecutionChange => BLS_TO_EXECUTION_CHANGE_TOPIC.into(),
             GossipKind::LightClientFinalityUpdate => LIGHT_CLIENT_FINALITY_UPDATE.into(),
@@ -366,6 +377,10 @@ fn subnet_topic_index(topic: &str) -> Option<GossipKind> {
         return Some(GossipKind::BlobSidecar(index.parse::<u64>().ok()?));
     } else if let Some(index) = topic.strip_prefix(DATA_COLUMN_SIDECAR_PREFIX) {
         return Some(GossipKind::DataColumnSidecar(DataColumnSubnetId::new(
+            index.parse::<u64>().ok()?,
+        )));
+    } else if let Some(index) = topic.strip_prefix(PARTIAL_DATA_COLUMN_SIDECAR_PREFIX) {
+        return Some(GossipKind::PartialDataColumnSidecar(DataColumnSubnetId::new(
             index.parse::<u64>().ok()?,
         )));
     }

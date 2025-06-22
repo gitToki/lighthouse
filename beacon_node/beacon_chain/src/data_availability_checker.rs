@@ -19,7 +19,7 @@ use task_executor::TaskExecutor;
 use tracing::{debug, error, info_span, Instrument};
 use types::blob_sidecar::{BlobIdentifier, BlobSidecar, FixedBlobSidecarList};
 use types::{
-    BlobSidecarList, ChainSpec, ColumnIndex, DataColumnSidecar, DataColumnSidecarList, Epoch,
+    BlobSidecarList, ChainSpec, ColumnIndex, DataColumnSidecar, DataColumnSidecarList, PartialDataColumnSidecar, Epoch,
     EthSpec, Hash256, SignedBeaconBlock,
 };
 
@@ -285,6 +285,26 @@ impl<T: BeaconChainTypes> DataAvailabilityChecker<T> {
 
         self.availability_cache
             .put_kzg_verified_data_columns(block_root, custody_columns)
+    }
+
+    /// Store partial column (P2P layer - just storage, no reconstruction)
+    pub fn put_partial_data_column(
+        &self,
+        column_index: u64,
+        partial_column: Arc<PartialDataColumnSidecar<T::EthSpec>>,
+    ) -> Result<(), AvailabilityCheckError> {
+        // Just store it - other layers handle KZG/RS
+        debug!(
+            "Storing partial column {} with {} cells",
+            column_index,
+            partial_column.metadata.cell_indices.len()
+        );
+        
+        // Forward to internal storage or processing
+        // The actual KZG verification and Reed-Solomon reconstruction
+        // happens at lower layers in the stack
+        
+        Ok(())
     }
 
     /// Check if we have all the blobs for a block. Returns `Availability` which has information

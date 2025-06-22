@@ -401,6 +401,20 @@ impl<T: BeaconChainTypes> Router<T> {
                         ),
                 )
             }
+            PubsubMessage::PartialDataColumnSidecar(data) => {
+                let (subnet_id, partial_column_sidecar) = *data;
+                self.handle_beacon_processor_send_result(
+                    self.network_beacon_processor
+                        .send_gossip_partial_data_column_sidecar(
+                            message_id,
+                            peer_id,
+                            self.network_globals.client(&peer_id),
+                            subnet_id,
+                            partial_column_sidecar,
+                            timestamp_now(),
+                        ),
+                )
+            }
             PubsubMessage::VoluntaryExit(exit) => {
                 debug!(%peer_id, "Received a voluntary exit");
                 self.handle_beacon_processor_send_result(

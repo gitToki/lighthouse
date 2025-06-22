@@ -111,6 +111,10 @@ pub struct ChainConfig {
     pub block_publishing_delay: Option<Duration>,
     /// Artificial delay for data column publishing. For PeerDAS testing only.
     pub data_column_publishing_delay: Option<Duration>,
+    /// Number of cells to send in each partial column message
+    pub partial_column_cells_per_message: usize,
+    /// Enable partial column dissemination (if false, sends full columns)
+    pub enable_partial_column_dissemination: bool,
     /// Block roots of "banned" blocks which Lighthouse will refuse to import.
     ///
     /// On Holesky there is a block which is added to this set by default but which can be removed
@@ -155,6 +159,8 @@ impl Default for ChainConfig {
             block_publishing_delay: None,
             data_column_publishing_delay: None,
             invalid_block_roots: HashSet::new(),
+            partial_column_cells_per_message: 16,
+            enable_partial_column_dissemination: true,
         }
     }
 }

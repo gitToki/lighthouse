@@ -24,6 +24,8 @@ pub struct GossipCache {
     blob_sidecar: Option<Duration>,
     /// Timeout for data columns.
     data_column_sidecar: Option<Duration>,
+    /// Timeout for partial data columns.
+    partial_data_column_sidecar: Option<Duration>,
     /// Timeout for aggregate attestations.
     aggregates: Option<Duration>,
     /// Timeout for attestations.
@@ -55,6 +57,8 @@ pub struct GossipCacheBuilder {
     blob_sidecar: Option<Duration>,
     /// Timeout for data column sidecars.
     data_column_sidecar: Option<Duration>,
+    /// Timeout for partial data column sidecars.
+    partial_data_column_sidecar: Option<Duration>,
     /// Timeout for aggregate attestations.
     aggregates: Option<Duration>,
     /// Timeout for attestations.
@@ -151,12 +155,19 @@ impl GossipCacheBuilder {
         self
     }
 
+    /// Timeout for partial data column sidecar messages.
+    pub fn partial_data_column_sidecar_timeout(mut self, timeout: Duration) -> Self {
+        self.partial_data_column_sidecar = Some(timeout);
+        self
+    }
+
     pub fn build(self) -> GossipCache {
         let GossipCacheBuilder {
             default_timeout,
             beacon_block,
             blob_sidecar,
             data_column_sidecar,
+            partial_data_column_sidecar,
             aggregates,
             attestation,
             voluntary_exit,
@@ -174,6 +185,7 @@ impl GossipCacheBuilder {
             beacon_block: beacon_block.or(default_timeout),
             blob_sidecar: blob_sidecar.or(default_timeout),
             data_column_sidecar: data_column_sidecar.or(default_timeout),
+            partial_data_column_sidecar: partial_data_column_sidecar.or(default_timeout),
             aggregates: aggregates.or(default_timeout),
             attestation: attestation.or(default_timeout),
             voluntary_exit: voluntary_exit.or(default_timeout),
@@ -201,6 +213,7 @@ impl GossipCache {
             GossipKind::BeaconBlock => self.beacon_block,
             GossipKind::BlobSidecar(_) => self.blob_sidecar,
             GossipKind::DataColumnSidecar(_) => self.data_column_sidecar,
+            GossipKind::PartialDataColumnSidecar(_) => self.partial_data_column_sidecar,
             GossipKind::BeaconAggregateAndProof => self.aggregates,
             GossipKind::Attestation(_) => self.attestation,
             GossipKind::VoluntaryExit => self.voluntary_exit,
