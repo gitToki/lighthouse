@@ -25,6 +25,8 @@ use lighthouse_network::{
     Client, MessageId, NetworkGlobals, PeerId, PubsubMessage,
 };
 use rand::prelude::SliceRandom;
+use rand::{Rng, SeedableRng};
+use slot_clock::SlotClock;
 use std::path::PathBuf;
 use std::sync::Arc;
 use std::time::Duration;
@@ -1117,17 +1119,48 @@ impl<T: BeaconChainTypes> NetworkBeaconProcessor<T> {
                 let publish_fn: Box<dyn Fn(DataColumnSidecarList<T::EthSpec>) + Send + Sync> = 
                 if enable_partial {
                     Box::new(move |columns: DataColumnSidecarList<T::EthSpec>| {
+                        // Get current slot for deterministic randomness
+                        let current_slot = self_clone.chain.slot_clock.now()
+                            .unwrap_or_else(|| self_clone.chain.slot_clock.genesis_slot());
+                        
                         let partial_messages: Vec<_> = columns
                             .into_iter()
+                            .filter(|column| {
+                                // Only send partial columns for columns we have custody of
+                                // According to spec: nodes always store the same columns (static assignment)
+                                let custody_columns = self_clone.network_globals.sampling_columns();
+                                
+                                // Check if this node has custody of this column
+                                custody_columns.contains(&column.index)
+                            })
                             .filter_map(|column| {
                                 let total_cells = column.column.len();
-                                let cells_per_msg = std::cmp::min(
-                                    cells_per_message,
-                                    total_cells
-                                );
+                                
+                                // Generate random cell selection per slot based on spec:
+                                // "send random cells at every time"
+                                // Use slot + column_index + node_id for deterministic randomness
+                                let mut hasher = std::collections::hash_map::DefaultHasher::new();
+                                use std::hash::Hasher;
+                                hasher.write(&self_clone.network_globals.local_enr().node_id().raw());
+                                hasher.write(&column.index.to_le_bytes());
+                                hasher.write(&current_slot.as_u64().to_le_bytes());
+                                let seed = hasher.finish();
+                                
+                                let mut rng = rand::rngs::StdRng::seed_from_u64(seed);
+                                
+                                // Variable cell count per slot (as mentioned in your comment)
+                                // Random between 1 and min(cells_per_message, total_cells)
+                                let max_cells = std::cmp::min(cells_per_message, total_cells);
+                                let cells_to_send = if max_cells > 1 {
+                                    rng.gen_range(1..=max_cells)
+                                } else {
+                                    max_cells
+                                };
+                                
+                                // Select random cell indices
                                 let mut cell_indices: Vec<u64> = (0..total_cells as u64).collect();
-                                cell_indices.shuffle(&mut rand::thread_rng());
-                                cell_indices.truncate(cells_per_msg);
+                                cell_indices.shuffle(&mut rng);
+                                cell_indices.truncate(cells_to_send);
                                 cell_indices.sort();
                                 
                                 match PartialDataColumnSidecar::from_full_column(&column, cell_indices) {
