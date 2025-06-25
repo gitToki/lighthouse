@@ -160,7 +160,7 @@ impl Default for ChainConfig {
             data_column_publishing_delay: None,
             invalid_block_roots: HashSet::new(),
             partial_column_cells_per_message: 16,
-            enable_partial_column_dissemination: false,
+            enable_partial_column_dissemination: true,
         }
     }
 }
