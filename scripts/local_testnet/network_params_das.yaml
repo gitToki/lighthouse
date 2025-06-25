@@ -25,10 +25,7 @@ network_params:
   seconds_per_slot: 6
 snooper_enabled: false
 global_log_level: debug
-additional_services:
-  - dora
-  - spamoor
-  - prometheus_grafana
+additional_services: []
 spamoor_params:
   spammers:
     - scenario: eoatx

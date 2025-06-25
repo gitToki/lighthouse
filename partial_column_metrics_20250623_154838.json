@@ -1,0 +1,1979 @@
+{
+  "test_config": {
+    "lighthouse_version": "v7.1.0-beta.0-d610f55+",
+    "partial_column_dissemination": false,
+    "duration_minutes": 5,
+    "measurement_interval_seconds": 30,
+    "nodes": 4,
+    "total_network_calls_made": 0
+  },
+  "node_info": {
+    "cl-1": {
+      "peer_id": "16Uiu2HAmJav21JyFDCCtxrUGYUMzmuwjRoSthZHTyaRP33tmrv3u",
+      "p2p_addresses": [
+        "/ip4/172.16.24.15/tcp/9000/p2p/16Uiu2HAmJav21JyFDCCtxrUGYUMzmuwjRoSthZHTyaRP33tmrv3u"
+      ],
+      "enr": "enr:-Oq4QHE9mGqmULMR_glH5g2x1CSOPyBZcb8HGn256elNJxVyIOubnjhjj__Q9GynV0v0A4Ojj__hGAxqia-mw9CWTPBFh2F0dG5ldHOI__________-DY2djgYCGY2xpZW502IpMaWdodGhvdXNljDcuMS4wLWJldGEuMIRldGgykNHwXK5wAAA4AQAAAAAAAACCaWSCdjSCaXCErBAYD4RxdWljgiMpiXNlY3AyNTZrMaEDWBrmSnHwRk75k39bvynrYTYO_W8GDAf51YTAYh04c-SIc3luY25ldHMPg3RjcIIjKIN1ZHCCIyg"
+    },
+    "cl-2": {
+      "peer_id": "16Uiu2HAkvTPFnBhZKvmkeBpyfMaxzX6MDkzpg8omQgnknGNNrnw2",
+      "p2p_addresses": [
+        "/ip4/172.16.24.16/tcp/9000/p2p/16Uiu2HAkvTPFnBhZKvmkeBpyfMaxzX6MDkzpg8omQgnknGNNrnw2"
+      ],
+      "enr": "enr:-Oq4QLgBRvn0XV00wjt5drE8tnelW5p7MOqjQG6c1hLx6R0YfSCyYUwzd4Ak3Kma3By5zAkkwO3xCXVCffuM8V1ZBgBFh2F0dG5ldHOI__________-DY2djgYCGY2xpZW502IpMaWdodGhvdXNljDcuMS4wLWJldGEuMIRldGgykNHwXK5wAAA4AQAAAAAAAACCaWSCdjSCaXCErBAYEIRxdWljgiMpiXNlY3AyNTZrMaECD0vwMC6JQ3jTGza_GvLLSdofsPJwf_RB6_3dmI4U3OmIc3luY25ldHMPg3RjcIIjKIN1ZHCCIyg"
+    },
+    "cl-3": {
+      "peer_id": "16Uiu2HAmVWT5BWfMp9DAKcoUAxUdk1p4L3fPv8XJ6T7vExHH4b8D",
+      "p2p_addresses": [
+        "/ip4/172.16.24.17/tcp/9000/p2p/16Uiu2HAmVWT5BWfMp9DAKcoUAxUdk1p4L3fPv8XJ6T7vExHH4b8D"
+      ],
+      "enr": "enr:-Om4QC285IYvJWKt3cy9-N9k-wWGcenUhrYmpmhf1P3Y_hR5F6iG8JNcrL6AWEDQ36S9oIEZDVYFruP55JOTuf2iRwcSh2F0dG5ldHOIAAAAAAAAABiDY2djOIZjbGllbnTYikxpZ2h0aG91c2WMNy4xLjAtYmV0YS4whGV0aDKQ0fBcrnAAADgBAAAAAAAAAIJpZIJ2NIJpcISsEBgRhHF1aWOCIymJc2VjcDI1NmsxoQP6ZqpafgDNVb5lXRyH76o-R0Fstm6smrFB_oKGOQdrIohzeW5jbmV0cw-DdGNwgiMog3VkcIIjKA"
+    },
+    "cl-4": {
+      "peer_id": "16Uiu2HAmUbaRZ7iUeSXrXUyWQ9sgGfXNrTZkhX1e6PZpXpp1dXXj",
+      "p2p_addresses": [
+        "/ip4/172.16.24.18/tcp/9000/p2p/16Uiu2HAmUbaRZ7iUeSXrXUyWQ9sgGfXNrTZkhX1e6PZpXpp1dXXj"
+      ],
+      "enr": "enr:-Om4QGLoLy7-LMR64RYIneenkyXpvdchf7optaptIBQ0Jk5befszHxhh7G8cTVRd6nkGde0EEWsnYrSlob5fK3GxMzIRh2F0dG5ldHOIAAYAAAAAAACDY2djO4ZjbGllbnTYikxpZ2h0aG91c2WMNy4xLjAtYmV0YS4whGV0aDKQ0fBcrnAAADgBAAAAAAAAAIJpZIJ2NIJpcISsEBgShHF1aWOCIymJc2VjcDI1NmsxoQPs2zHUYpIDsUpK849ZA2EwjHwXguDkEzuy6XxxcKcW7ohzeW5jbmV0cw-DdGNwgiMog3VkcIIjKA"
+    }
+  },
+  "metrics_timeline": [
+    {
+      "timestamp": "2025-06-23T15:43:37.169093",
+      "nodes": {
+        "cl-1": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            1617989.0,
+            769684.0,
+            1615352.0,
+            795291.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            59.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            35.0
+          ],
+          "beacon_block_processing_requests_total": [
+            13.0
+          ],
+          "beacon_block_processing_successes_total": [
+            26.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        },
+        "cl-2": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            804360.0,
+            765219.0,
+            1609403.0,
+            1637301.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            60.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            35.0
+          ],
+          "beacon_block_processing_requests_total": [
+            13.0
+          ],
+          "beacon_block_processing_successes_total": [
+            26.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        },
+        "cl-3": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            1599214.0,
+            1574097.0,
+            780451.0,
+            786567.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            60.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            22.0
+          ],
+          "beacon_block_processing_requests_total": [
+            13.0
+          ],
+          "beacon_block_processing_successes_total": [
+            26.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        },
+        "cl-4": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            795291.0,
+            1590855.0,
+            769684.0,
+            1545806.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            63.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            27.0
+          ],
+          "beacon_block_processing_requests_total": [
+            13.0
+          ],
+          "beacon_block_processing_successes_total": [
+            26.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        }
+      }
+    },
+    {
+      "timestamp": "2025-06-23T15:44:07.215542",
+      "nodes": {
+        "cl-1": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            2222197.0,
+            1078596.0,
+            2200350.0,
+            1079870.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            86.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            46.0
+          ],
+          "beacon_block_processing_requests_total": [
+            18.0
+          ],
+          "beacon_block_processing_successes_total": [
+            36.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        },
+        "cl-2": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            1101244.0,
+            1062449.0,
+            2182573.0,
+            2247648.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            80.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            46.0
+          ],
+          "beacon_block_processing_requests_total": [
+            18.0
+          ],
+          "beacon_block_processing_successes_total": [
+            36.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        },
+        "cl-3": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            2200175.0,
+            2157091.0,
+            1092718.0,
+            1070573.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            80.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            28.0
+          ],
+          "beacon_block_processing_requests_total": [
+            18.0
+          ],
+          "beacon_block_processing_successes_total": [
+            36.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        },
+        "cl-4": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            1079870.0,
+            2171745.0,
+            1078596.0,
+            2155303.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            84.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            34.0
+          ],
+          "beacon_block_processing_requests_total": [
+            18.0
+          ],
+          "beacon_block_processing_successes_total": [
+            36.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        }
+      }
+    },
+    {
+      "timestamp": "2025-06-23T15:44:37.295311",
+      "nodes": {
+        "cl-1": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            2816790.0,
+            1363209.0,
+            2818228.0,
+            1391097.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            105.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            57.0
+          ],
+          "beacon_block_processing_requests_total": [
+            23.0
+          ],
+          "beacon_block_processing_successes_total": [
+            46.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        },
+        "cl-2": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            1407015.0,
+            1353036.0,
+            2798875.0,
+            2839252.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            104.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            57.0
+          ],
+          "beacon_block_processing_requests_total": [
+            23.0
+          ],
+          "beacon_block_processing_successes_total": [
+            46.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        },
+        "cl-3": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            2803488.0,
+            2761817.0,
+            1379250.0,
+            1382152.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            103.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            34.0
+          ],
+          "beacon_block_processing_requests_total": [
+            23.0
+          ],
+          "beacon_block_processing_successes_total": [
+            46.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        },
+        "cl-4": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            1391097.0,
+            2789095.0,
+            1363209.0,
+            2732422.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            109.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            40.0
+          ],
+          "beacon_block_processing_requests_total": [
+            23.0
+          ],
+          "beacon_block_processing_successes_total": [
+            46.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        }
+      }
+    },
+    {
+      "timestamp": "2025-06-23T15:45:07.345664",
+      "nodes": {
+        "cl-1": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            3424156.0,
+            1666842.0,
+            3410018.0,
+            1688630.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            130.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            71.0
+          ],
+          "beacon_block_processing_requests_total": [
+            28.0
+          ],
+          "beacon_block_processing_successes_total": [
+            56.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        },
+        "cl-2": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            1712012.0,
+            1653747.0,
+            3371198.0,
+            3453107.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            126.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            68.0
+          ],
+          "beacon_block_processing_requests_total": [
+            28.0
+          ],
+          "beacon_block_processing_successes_total": [
+            56.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        },
+        "cl-3": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            3409876.0,
+            3342249.0,
+            1686660.0,
+            1675313.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            124.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            42.0
+          ],
+          "beacon_block_processing_requests_total": [
+            28.0
+          ],
+          "beacon_block_processing_successes_total": [
+            56.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        },
+        "cl-4": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            1688630.0,
+            3387253.0,
+            1666842.0,
+            3340543.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            135.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            47.0
+          ],
+          "beacon_block_processing_requests_total": [
+            28.0
+          ],
+          "beacon_block_processing_successes_total": [
+            56.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        }
+      }
+    },
+    {
+      "timestamp": "2025-06-23T15:45:37.404534",
+      "nodes": {
+        "cl-1": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            4109912.0,
+            2004865.0,
+            4046596.0,
+            1974590.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            153.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            81.0
+          ],
+          "beacon_block_processing_requests_total": [
+            33.0
+          ],
+          "beacon_block_processing_successes_total": [
+            66.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        },
+        "cl-2": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            2009687.0,
+            1995712.0,
+            4050641.0,
+            4119592.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            150.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            79.0
+          ],
+          "beacon_block_processing_requests_total": [
+            33.0
+          ],
+          "beacon_block_processing_successes_total": [
+            66.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        },
+        "cl-3": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            4018178.0,
+            4012687.0,
+            2003166.0,
+            1971123.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            143.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            49.0
+          ],
+          "beacon_block_processing_requests_total": [
+            33.0
+          ],
+          "beacon_block_processing_successes_total": [
+            66.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        },
+        "cl-4": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            1974590.0,
+            3980738.0,
+            2004865.0,
+            3999014.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            158.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            53.0
+          ],
+          "beacon_block_processing_requests_total": [
+            33.0
+          ],
+          "beacon_block_processing_successes_total": [
+            66.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        }
+      }
+    },
+    {
+      "timestamp": "2025-06-23T15:46:07.475394",
+      "nodes": {
+        "cl-1": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            4809049.0,
+            2359499.0,
+            4780843.0,
+            2216529.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            178.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            92.0
+          ],
+          "beacon_block_processing_requests_total": [
+            38.0
+          ],
+          "beacon_block_processing_successes_total": [
+            76.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        },
+        "cl-2": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            2237265.0,
+            2360529.0,
+            4885444.0,
+            4799176.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            171.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            91.0
+          ],
+          "beacon_block_processing_requests_total": [
+            38.0
+          ],
+          "beacon_block_processing_successes_total": [
+            76.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        },
+        "cl-3": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            4627407.0,
+            4742025.0,
+            2349960.0,
+            2223120.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            171.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            55.0
+          ],
+          "beacon_block_processing_requests_total": [
+            38.0
+          ],
+          "beacon_block_processing_successes_total": [
+            76.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        },
+        "cl-4": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            2216529.0,
+            4460313.0,
+            2359499.0,
+            4710625.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            181.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            59.0
+          ],
+          "beacon_block_processing_requests_total": [
+            38.0
+          ],
+          "beacon_block_processing_successes_total": [
+            76.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        }
+      }
+    },
+    {
+      "timestamp": "2025-06-23T15:46:37.556611",
+      "nodes": {
+        "cl-1": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            5572238.0,
+            2714508.0,
+            5477238.0,
+            2464263.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            203.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            104.0
+          ],
+          "beacon_block_processing_requests_total": [
+            43.0
+          ],
+          "beacon_block_processing_successes_total": [
+            86.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        },
+        "cl-2": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            2469637.0,
+            2722839.0,
+            5658739.0,
+            5453244.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            195.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            103.0
+          ],
+          "beacon_block_processing_requests_total": [
+            43.0
+          ],
+          "beacon_block_processing_successes_total": [
+            86.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        },
+        "cl-3": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            5166402.0,
+            5467041.0,
+            2673100.0,
+            2493003.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            196.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            63.0
+          ],
+          "beacon_block_processing_requests_total": [
+            43.0
+          ],
+          "beacon_block_processing_successes_total": [
+            86.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        },
+        "cl-4": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            2464263.0,
+            4962568.0,
+            2714508.0,
+            5396075.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            204.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            67.0
+          ],
+          "beacon_block_processing_requests_total": [
+            43.0
+          ],
+          "beacon_block_processing_successes_total": [
+            86.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        }
+      }
+    },
+    {
+      "timestamp": "2025-06-23T15:47:07.651239",
+      "nodes": {
+        "cl-1": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            6265263.0,
+            3053827.0,
+            6152069.0,
+            2712724.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            221.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            114.0
+          ],
+          "beacon_block_processing_requests_total": [
+            48.0
+          ],
+          "beacon_block_processing_successes_total": [
+            96.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        },
+        "cl-2": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            2713438.0,
+            3075685.0,
+            6435887.0,
+            6089067.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            215.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            113.0
+          ],
+          "beacon_block_processing_requests_total": [
+            48.0
+          ],
+          "beacon_block_processing_successes_total": [
+            96.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        },
+        "cl-3": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            5722529.0,
+            6182687.0,
+            2983800.0,
+            2773816.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            219.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            70.0
+          ],
+          "beacon_block_processing_requests_total": [
+            48.0
+          ],
+          "beacon_block_processing_successes_total": [
+            96.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        },
+        "cl-4": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            2712724.0,
+            5487182.0,
+            3053827.0,
+            6059621.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            228.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            74.0
+          ],
+          "beacon_block_processing_requests_total": [
+            48.0
+          ],
+          "beacon_block_processing_successes_total": [
+            96.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        }
+      }
+    },
+    {
+      "timestamp": "2025-06-23T15:47:37.747328",
+      "nodes": {
+        "cl-1": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            7021651.0,
+            3405530.0,
+            6786961.0,
+            2969203.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            246.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            124.0
+          ],
+          "beacon_block_processing_requests_total": [
+            53.0
+          ],
+          "beacon_block_processing_successes_total": [
+            106.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        },
+        "cl-2": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            2958275.0,
+            3421380.0,
+            7114432.0,
+            6767812.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            242.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            123.0
+          ],
+          "beacon_block_processing_requests_total": [
+            53.0
+          ],
+          "beacon_block_processing_successes_total": [
+            106.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        },
+        "cl-3": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            6321297.0,
+            6902751.0,
+            3307515.0,
+            3040432.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            237.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            75.0
+          ],
+          "beacon_block_processing_requests_total": [
+            53.0
+          ],
+          "beacon_block_processing_successes_total": [
+            106.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        },
+        "cl-4": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            2969203.0,
+            5998635.0,
+            3405530.0,
+            6729031.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            248.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            79.0
+          ],
+          "beacon_block_processing_requests_total": [
+            53.0
+          ],
+          "beacon_block_processing_successes_total": [
+            106.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        }
+      }
+    },
+    {
+      "timestamp": "2025-06-23T15:48:07.860189",
+      "nodes": {
+        "cl-1": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            7788863.0,
+            3762483.0,
+            7462462.0,
+            3205974.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            268.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            136.0
+          ],
+          "beacon_block_processing_requests_total": [
+            58.0
+          ],
+          "beacon_block_processing_successes_total": [
+            116.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        },
+        "cl-2": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            3201005.0,
+            3779599.0,
+            7866818.0,
+            7447544.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            261.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            135.0
+          ],
+          "beacon_block_processing_requests_total": [
+            58.0
+          ],
+          "beacon_block_processing_successes_total": [
+            116.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        },
+        "cl-3": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            6909592.0,
+            7655411.0,
+            3641688.0,
+            3293947.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            262.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            80.0
+          ],
+          "beacon_block_processing_requests_total": [
+            58.0
+          ],
+          "beacon_block_processing_successes_total": [
+            116.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        },
+        "cl-4": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            3205974.0,
+            6494880.0,
+            3762483.0,
+            7421423.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            273.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            88.0
+          ],
+          "beacon_block_processing_requests_total": [
+            58.0
+          ],
+          "beacon_block_processing_successes_total": [
+            116.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        }
+      }
+    },
+    {
+      "timestamp": "2025-06-23T15:48:37.955190",
+      "nodes": {
+        "cl-1": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            8534504.0,
+            4120348.0,
+            8224845.0,
+            3437854.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            293.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            148.0
+          ],
+          "beacon_block_processing_requests_total": [
+            63.0
+          ],
+          "beacon_block_processing_successes_total": [
+            126.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        },
+        "cl-2": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            3424213.0,
+            4145552.0,
+            8710013.0,
+            8153199.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            287.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            145.0
+          ],
+          "beacon_block_processing_requests_total": [
+            63.0
+          ],
+          "beacon_block_processing_successes_total": [
+            126.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        },
+        "cl-3": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            7548758.0,
+            8415697.0,
+            3975931.0,
+            3537116.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            282.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            85.0
+          ],
+          "beacon_block_processing_requests_total": [
+            63.0
+          ],
+          "beacon_block_processing_successes_total": [
+            126.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        },
+        "cl-4": {
+          "libp2p_peers": [
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            2.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "libp2p_bandwidth_bytes_total": [
+            3438861.0,
+            6962264.0,
+            4121516.0,
+            8122787.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "beacon_aggregated_attestation_processing_requests_total": [
+            293.0
+          ],
+          "beacon_aggregated_attestation_processing_successes_total": [
+            93.0
+          ],
+          "beacon_block_processing_requests_total": [
+            64.0
+          ],
+          "beacon_block_processing_successes_total": [
+            126.0
+          ],
+          "beacon_attestation_processing_requests_total": [],
+          "beacon_attestation_processing_successes_total": []
+        }
+      }
+    }
+  ],
+  "final_network_stats": {
+    "cl-1": {
+      "peer_count": 3,
+      "peers": [
+        "16Uiu2HAmUbaRZ7iUeSXrXUyWQ9sgGfXNrTZkhX1e6PZpXpp1dXXj",
+        "16Uiu2HAkvTPFnBhZKvmkeBpyfMaxzX6MDkzpg8omQgnknGNNrnw2",
+        "16Uiu2HAmVWT5BWfMp9DAKcoUAxUdk1p4L3fPv8XJ6T7vExHH4b8D"
+      ]
+    },
+    "cl-2": {
+      "peer_count": 3,
+      "peers": [
+        "16Uiu2HAmJav21JyFDCCtxrUGYUMzmuwjRoSthZHTyaRP33tmrv3u",
+        "16Uiu2HAmVWT5BWfMp9DAKcoUAxUdk1p4L3fPv8XJ6T7vExHH4b8D",
+        "16Uiu2HAmUbaRZ7iUeSXrXUyWQ9sgGfXNrTZkhX1e6PZpXpp1dXXj"
+      ]
+    },
+    "cl-3": {
+      "peer_count": 3,
+      "peers": [
+        "16Uiu2HAmJav21JyFDCCtxrUGYUMzmuwjRoSthZHTyaRP33tmrv3u",
+        "16Uiu2HAkvTPFnBhZKvmkeBpyfMaxzX6MDkzpg8omQgnknGNNrnw2",
+        "16Uiu2HAmUbaRZ7iUeSXrXUyWQ9sgGfXNrTZkhX1e6PZpXpp1dXXj"
+      ]
+    },
+    "cl-4": {
+      "peer_count": 3,
+      "peers": [
+        "16Uiu2HAmVWT5BWfMp9DAKcoUAxUdk1p4L3fPv8XJ6T7vExHH4b8D",
+        "16Uiu2HAkvTPFnBhZKvmkeBpyfMaxzX6MDkzpg8omQgnknGNNrnw2",
+        "16Uiu2HAmJav21JyFDCCtxrUGYUMzmuwjRoSthZHTyaRP33tmrv3u"
+      ]
+    }
+  }
+}

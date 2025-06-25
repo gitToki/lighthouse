@@ -1,0 +1,1455 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 670B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/ubuntu:22.04
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/rust:1.84.0-bullseye
+#3 DONE 0.8s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 194B done
+#4 DONE 0.0s
+
+#5 [stage-1 1/3] FROM docker.io/library/ubuntu:22.04@sha256:01a3ee0b5e413cefaaffc6abe68c9c37879ae3cced56a8e088b1649e5b269eee
+#5 resolve docker.io/library/ubuntu:22.04@sha256:01a3ee0b5e413cefaaffc6abe68c9c37879ae3cced56a8e088b1649e5b269eee done
+#5 DONE 0.0s
+
+#6 [builder 1/4] FROM docker.io/library/rust:1.84.0-bullseye@sha256:ef8b1b907c5a8bd36bccc4db972c41cb89f79cf72635fc6e30a398f51444d1d1
+#6 resolve docker.io/library/rust:1.84.0-bullseye@sha256:ef8b1b907c5a8bd36bccc4db972c41cb89f79cf72635fc6e30a398f51444d1d1 done
+#6 DONE 0.0s
+
+#7 [internal] load build context
+#7 transferring context: 220.94MB 1.7s done
+#7 DONE 1.7s
+
+#8 [builder 2/4] RUN apt-get update && apt-get -y upgrade && apt-get install -y cmake libclang-dev
+#8 CACHED
+
+#9 [builder 3/4] COPY . lighthouse
+#9 DONE 0.4s
+
+#10 [builder 4/4] RUN cd lighthouse && make
+#10 0.148 cargo install --path lighthouse --force --locked \
+#10 0.148 	--features "portable,spec-minimal" \
+#10 0.148 	--profile "release" \
+#10 0.148 	
+#10 0.322   Installing lighthouse v7.1.0-beta.0 (/lighthouse/lighthouse)
+#10 0.334     Updating git repository `https://github.com/sigp/quick-protobuf.git`
+#10 0.893 From https://github.com/sigp/quick-protobuf
+#10 0.893  * [new ref]         681f413312404ab6e51f0b46f39b0075c6f4ebfd -> refs/commit/681f413312404ab6e51f0b46f39b0075c6f4ebfd
+#10 0.911     Updating crates.io index
+#10 0.961     Updating git repository `http://github.com/sigp/xdelta3-rs`
+#10 1.211 warning: redirecting to https://github.com/sigp/xdelta3-rs/
+#10 1.420 From http://github.com/sigp/xdelta3-rs
+#10 1.420  * [new ref]         4db64086bb02e9febb584ba93b9d16bb2ae3825a -> refs/commit/4db64086bb02e9febb584ba93b9d16bb2ae3825a
+#10 1.430     Updating git submodule `https://github.com/jmacd/xdelta.git`
+#10 2.155 From https://github.com/jmacd/xdelta
+#10 2.155  * [new ref]         0525275fe4b553a10f38e455d30c60dc6ed9b45d -> refs/commit/0525275fe4b553a10f38e455d30c60dc6ed9b45d
+#10 2.167     Updating git repository `https://github.com/sigp/lmdb-rs`
+#10 2.588 From https://github.com/sigp/lmdb-rs
+#10 2.588  * [new ref]         f33845c6469b94265319aac0ed5085597862c27e -> refs/commit/f33845c6469b94265319aac0ed5085597862c27e
+#10 2.599     Updating git submodule `https://github.com/mozilla/lmdb`
+#10 3.181 From https://github.com/mozilla/lmdb
+#10 3.181  * [new ref]         205300e8aecf91c6f94be7da1e7681822608f600 -> refs/commit/205300e8aecf91c6f94be7da1e7681822608f600
+#10 3.669     Updating git repository `https://github.com/sigp/libmdbx-rs`
+#10 4.394 From https://github.com/sigp/libmdbx-rs
+#10 4.394  * [new ref]         e6ff4b9377c1619bcf0bfdf52bee5a980a432a1a -> refs/commit/e6ff4b9377c1619bcf0bfdf52bee5a980a432a1a
+#10 4.887     Updating git repository `https://github.com/sigp/rust-libp2p.git`
+#10 6.266 From https://github.com/sigp/rust-libp2p
+#10 6.266  * [new ref]           61b2820de7a3fab5ae5e1362c4dfa93bd7c41e98 -> refs/commit/61b2820de7a3fab5ae5e1362c4dfa93bd7c41e98
+#10 9.801  Downloading crates ...
+#10 9.886   Downloaded allocator-api2 v0.2.21
+#10 9.890   Downloaded ark-ff-macros v0.3.0
+#10 9.894   Downloaded hash256-std-hasher v0.15.2
+#10 9.895   Downloaded chacha20 v0.9.1
+#10 9.897   Downloaded const-oid v0.9.6
+#10 9.899   Downloaded clang-sys v1.8.1
+#10 9.902   Downloaded futures-timer v3.0.3
+#10 9.903   Downloaded alloy-eip2930 v0.1.0
+#10 9.903   Downloaded group v0.12.1
+#10 9.904   Downloaded hmac v0.12.1
+#10 9.905   Downloaded futures-executor v0.3.31
+#10 9.906   Downloaded ahash v0.8.12
+#10 9.908   Downloaded aes-gcm v0.10.3
+#10 9.910   Downloaded alloy-rlp v0.3.11
+#10 9.911   Downloaded alloy-eips v0.3.6
+#10 9.916   Downloaded impl-codec v0.5.1
+#10 9.917   Downloaded io-lifetimes v1.0.11
+#10 9.918   Downloaded alloy-primitives v0.8.25
+#10 9.921   Downloaded quinn-proto v0.11.11
+#10 9.926   Downloaded aes v0.7.5
+#10 9.928   Downloaded futures-io v0.3.31
+#10 9.929   Downloaded futures-core v0.3.31
+#10 9.929   Downloaded constant_time_eq v0.1.5
+#10 9.930   Downloaded aho-corasick v1.1.3
+#10 9.933   Downloaded icu_locid_transform v1.5.0
+#10 9.935   Downloaded iana-time-zone v0.1.63
+#10 9.936   Downloaded tiny-keccak v2.0.2
+#10 9.938   Downloaded httpdate v1.0.3
+#10 9.938   Downloaded futures-rustls v0.26.0
+#10 9.939   Downloaded aead v0.5.2
+#10 9.940   Downloaded alloy-eip7702 v0.1.1
+#10 9.940   Downloaded adler2 v2.0.0
+#10 9.941   Downloaded base64 v0.21.7
+#10 9.943   Downloaded arc-swap v1.7.1
+#10 9.945   Downloaded alloy-consensus v0.3.6
+#10 9.948   Downloaded hex_fmt v0.3.0
+#10 9.948   Downloaded ghash v0.5.1
+#10 9.949   Downloaded futures-sink v0.3.31
+#10 9.949   Downloaded aes v0.8.4
+#10 9.951   Downloaded cfg-if v1.0.0
+#10 9.955   Downloaded git-version v0.3.9
+#10 9.956   Downloaded base64 v0.22.1
+#10 9.958   Downloaded getrandom v0.3.2
+#10 9.962   Downloaded byteorder v1.5.0
+#10 9.963   Downloaded http-body-util v0.1.3
+#10 9.964   Downloaded hash-db v0.15.2
+#10 9.965   Downloaded generic-array v0.14.7
+#10 9.965   Downloaded bitvec v1.0.1
+#10 9.977   Downloaded uuid v0.8.2
+#10 9.983   Downloaded hickory-proto v0.25.0-alpha.5
+#10 9.998   Downloaded http v1.3.1
+#10 10.00   Downloaded crc32fast v1.4.2
+#10 10.01   Downloaded icu_provider_macros v1.5.0
+#10 10.01   Downloaded idna_adapter v1.2.0
+#10 10.01   Downloaded bzip2 v0.4.4
+#10 10.01   Downloaded integer-sqrt v0.1.5
+#10 10.01   Downloaded const-hex v1.14.0
+#10 10.01   Downloaded camino v1.1.9
+#10 10.02   Downloaded icu_provider v1.5.0
+#10 10.02   Downloaded jsonwebtoken v9.3.1
+#10 10.02   Downloaded icu_locid v1.5.0
+#10 10.02   Downloaded icu_collections v1.5.0
+#10 10.03   Downloaded ctr v0.8.0
+#10 10.03   Downloaded inout v0.1.4
+#10 10.03   Downloaded itoa v1.0.15
+#10 10.03   Downloaded const_format v0.2.34
+#10 10.04   Downloaded crypto-bigint v0.4.9
+#10 10.04   Downloaded keccak-hash v0.10.0
+#10 10.04   Downloaded impl-serde v0.3.2
+#10 10.04   Downloaded keccak v0.1.5
+#10 10.04   Downloaded if-watch v3.2.1
+#10 10.04   Downloaded chrono v0.4.41
+#10 10.05   Downloaded rustls-pemfile v2.2.0
+#10 10.05   Downloaded tokio-macros v2.5.0
+#10 10.05   Downloaded ryu v1.0.20
+#10 10.05   Downloaded tokio-rustls v0.25.0
+#10 10.06   Downloaded threadpool v1.8.1
+#10 10.06   Downloaded libloading v0.8.6
+#10 10.06   Downloaded proc-macro2 v1.0.95
+#10 10.06   Downloaded toml_datetime v0.6.9
+#10 10.06   Downloaded rustc-hash v1.1.0
+#10 10.06   Downloaded rfc6979 v0.3.1
+#10 10.06   Downloaded unsigned-varint v0.8.0
+#10 10.07   Downloaded logroller v0.1.8
+#10 10.07   Downloaded crossbeam-epoch v0.9.18
+#10 10.07   Downloaded crossbeam-deque v0.8.6
+#10 10.07   Downloaded crossbeam-utils v0.8.21
+#10 10.07   Downloaded rustls v0.21.12
+#10 10.08   Downloaded rusticata-macros v4.1.0
+#10 10.09   Downloaded fdlimit v0.3.0
+#10 10.09   Downloaded open-fastrlp v0.1.4
+#10 10.09   Downloaded pem v3.0.5
+#10 10.09   Downloaded miniz_oxide v0.8.8
+#10 10.09   Downloaded ff v0.13.1
+#10 10.10   Downloaded minimal-lexical v0.2.1
+#10 10.10   Downloaded ff v0.12.1
+#10 10.10   Downloaded mio v1.0.3
+#10 10.10   Downloaded signature v2.2.0
+#10 10.11   Downloaded mime_guess v2.0.5
+#10 10.11   Downloaded native-tls v0.2.14
+#10 10.11   Downloaded multiaddr v0.18.2
+#10 10.11   Downloaded rustls-pki-types v1.12.0
+#10 10.11   Downloaded multihash v0.19.3
+#10 10.11   Downloaded radium v0.7.0
+#10 10.11   Downloaded errno v0.3.11
+#10 10.11   Downloaded equivalent v1.0.2
+#10 10.12   Downloaded moka v0.12.10
+#10 10.12   Downloaded spin v0.9.8
+#10 10.12   Downloaded thiserror v2.0.12
+#10 10.13   Downloaded utf8parse v0.2.2
+#10 10.13   Downloaded tokio-io-timeout v1.2.0
+#10 10.13   Downloaded tokio-rustls v0.24.1
+#10 10.13   Downloaded rand_core v0.9.3
+#10 10.13   Downloaded socket2 v0.5.9
+#10 10.13   Downloaded fixed-hash v0.8.0
+#10 10.13   Downloaded netlink-packet-core v0.7.0
+#10 10.13   Downloaded netlink-sys v0.8.7
+#10 10.14   Downloaded rand_chacha v0.9.0
+#10 10.14   Downloaded neli-proc-macros v0.1.4
+#10 10.14   Downloaded nix v0.24.3
+#10 10.15   Downloaded fallible-iterator v0.2.0
+#10 10.15   Downloaded tokio v1.45.0
+#10 10.17   Downloaded psutil v3.3.0
+#10 10.18   Downloaded libp2p-identify v0.46.0
+#10 10.19   Downloaded lru v0.12.5
+#10 10.19   Downloaded either v1.15.0
+#10 10.19   Downloaded crate_crypto_internal_eth_kzg_polynomial v0.5.4
+#10 10.19   Downloaded rustc_version v0.4.1
+#10 10.20   Downloaded rustls-pemfile v1.0.4
+#10 10.20   Downloaded prometheus v0.13.4
+#10 10.21   Downloaded rustls v0.22.4
+#10 10.22   Downloaded ethbloom v0.11.1
+#10 10.22   Downloaded digest v0.10.7
+#10 10.22   Downloaded ethereum-types v0.12.1
+#10 10.22   Downloaded mime v0.3.17
+#10 10.22   Downloaded libp2p-core v0.43.0
+#10 10.22   Downloaded ethereum-types v0.14.1
+#10 10.22   Downloaded libp2p-mplex v0.43.0
+#10 10.22   Downloaded libp2p-connection-limits v0.5.0
+#10 10.23   Downloaded libp2p-metrics v0.16.0
+#10 10.23   Downloaded libp2p-plaintext v0.43.0
+#10 10.23   Downloaded libp2p-dns v0.43.0
+#10 10.23   Downloaded rcgen v0.13.2
+#10 10.23   Downloaded libp2p-noise v0.46.0
+#10 10.23   Downloaded signal-hook-registry v1.4.5
+#10 10.23   Downloaded tree_hash_derive v0.9.1
+#10 10.24   Downloaded ucd-trie v0.1.7
+#10 10.24   Downloaded tracing-serde v0.2.0
+#10 10.24   Downloaded platforms v2.0.0
+#10 10.24   Downloaded libp2p-tcp v0.43.0
+#10 10.24   Downloaded elliptic-curve v0.13.8
+#10 10.24   Downloaded typenum v1.18.0
+#10 10.25   Downloaded signature v1.6.4
+#10 10.25   Downloaded pairing v0.23.0
+#10 10.25   Downloaded libp2p-swarm-derive v0.35.0
+#10 10.25   Downloaded parking_lot_core v0.9.10
+#10 10.25   Downloaded subtle v2.6.1
+#10 10.25   Downloaded password-hash v0.4.2
+#10 10.25   Downloaded tracing-appender v0.2.3
+#10 10.25   Downloaded parity-scale-codec-derive v2.3.1
+#10 10.25   Downloaded pkcs8 v0.10.2
+#10 10.26   Downloaded sec1 v0.3.0
+#10 10.26   Downloaded sct v0.7.1
+#10 10.26   Downloaded stable_deref_trait v1.2.0
+#10 10.26   Downloaded tracing-core v0.1.33
+#10 10.26   Downloaded derive_more v2.0.1
+#10 10.27   Downloaded want v0.3.1
+#10 10.27   Downloaded unicase v2.8.1
+#10 10.27   Downloaded scale-info v2.11.6
+#10 10.27   Downloaded derive_more-impl v1.0.0
+#10 10.27   Downloaded parking_lot v0.12.3
+#10 10.28   Downloaded serde_json v1.0.140
+#10 10.28   Downloaded parity-scale-codec-derive v3.7.4
+#10 10.28   Downloaded unescape v0.1.0
+#10 10.28   Downloaded mediatype v0.19.20
+#10 10.29   Downloaded unarray v0.1.4
+#10 10.29   Downloaded semver v0.11.0
+#10 10.29   Downloaded ssz_types v0.10.1
+#10 10.30   Downloaded snap v1.1.1
+#10 10.30   Downloaded pkcs8 v0.9.0
+#10 10.30   Downloaded warp v0.3.7
+#10 10.31   Downloaded regex v1.11.1
+#10 10.32   Downloaded futures-bounded v0.2.4
+#10 10.32   Downloaded synstructure v0.13.2
+#10 10.32   Downloaded sync_wrapper v0.1.2
+#10 10.32   Downloaded pem-rfc7468 v0.7.0
+#10 10.33   Downloaded paste v1.0.15
+#10 10.33   Downloaded derive_more v0.99.20
+#10 10.33   Downloaded data-encoding v2.9.0
+#10 10.33   Downloaded thiserror-impl v1.0.69
+#10 10.33   Downloaded serde v1.0.219
+#10 10.34   Downloaded metastruct v0.1.3
+#10 10.34   Downloaded sha3 v0.10.8
+#10 10.34   Downloaded metastruct_macro v0.1.3
+#10 10.34   Downloaded parity-scale-codec v2.3.1
+#10 10.34   Downloaded overload v0.1.1
+#10 10.35   Downloaded openssl-sys v0.9.108
+#10 10.35   Downloaded semver-parser v0.10.3
+#10 10.35   Downloaded nom v7.1.3
+#10 10.35   Downloaded thiserror-impl v2.0.12
+#10 10.35   Downloaded uint v0.10.0
+#10 10.35   Downloaded which v4.4.2
+#10 10.36   Downloaded milhouse v0.5.0
+#10 10.36   Downloaded rlp-derive v0.1.0
+#10 10.36   Downloaded zstd v0.11.2+zstd.1.5.2
+#10 10.36   Downloaded time v0.3.41
+#10 10.36   Downloaded num-traits v0.2.19
+#10 10.37   Downloaded zerovec-derive v0.10.3
+#10 10.37   Downloaded num-bigint v0.4.6
+#10 10.37   Downloaded winnow v0.5.40
+#10 10.37   Downloaded winnow v0.7.10
+#10 10.38   Downloaded snow v0.9.6
+#10 10.39   Downloaded p256 v0.13.2
+#10 10.39   Downloaded zip v0.6.6
+#10 10.40   Downloaded libp2p-swarm v0.46.0
+#10 10.40   Downloaded libp2p-tls v0.6.1
+#10 10.40   Downloaded libp2p-quic v0.12.0
+#10 10.41   Downloaded serde_derive v1.0.219
+#10 10.41   Downloaded memchr v2.7.4
+#10 10.41   Downloaded smallvec v1.15.0
+#10 10.41   Downloaded serde_array_query v0.1.0
+#10 10.41   Downloaded ring v0.17.14
+#10 10.44   Downloaded linux-raw-sys v0.1.4
+#10 10.46   Downloaded libz-sys v1.1.22
+#10 10.47   Downloaded time-core v0.1.4
+#10 10.47   Downloaded webpki-roots v0.25.4
+#10 10.48   Downloaded tikv-jemallocator v0.6.0
+#10 10.48   Downloaded rpassword v5.0.1
+#10 10.48   Downloaded nohash-hasher v0.2.0
+#10 10.48   Downloaded num-iter v0.1.45
+#10 10.48   Downloaded sec1 v0.7.3
+#10 10.48   Downloaded terminal_size v0.4.2
+#10 10.49   Downloaded tikv-jemalloc-sys v0.6.0+5.3.0-1-ge13ca993e8ccb9ba9847cc330696e02839f328f7
+#10 10.51   Downloaded semver v1.0.26
+#10 10.51   Downloaded syn v2.0.101
+#10 10.52   Downloaded darling_macro v0.20.11
+#10 10.52   Downloaded tempfile v3.19.1
+#10 10.52   Downloaded sysinfo v0.26.9
+#10 10.53   Downloaded futures-channel v0.3.31
+#10 10.53   Downloaded futures v0.3.31
+#10 10.53   Downloaded regex-syntax v0.6.29
+#10 10.54   Downloaded encoding_rs v0.8.35
+#10 10.55   Downloaded ethers-core v1.0.2
+#10 10.56   Downloaded funty v2.0.0
+#10 10.56   Downloaded funty v1.1.0
+#10 10.56   Downloaded regex-automata v0.4.9
+#10 10.57   Downloaded rayon-core v1.12.1
+#10 10.57   Downloaded proptest v1.6.0
+#10 10.58   Downloaded derive_more-impl v2.0.1
+#10 10.58   Downloaded event-listener v2.5.3
+#10 10.58   Downloaded ethereum_ssz v0.8.3
+#10 10.58   Downloaded elliptic-curve v0.12.3
+#10 10.59   Downloaded zstd-safe v7.2.4
+#10 10.59   Downloaded zstd v0.13.3
+#10 10.59   Downloaded event-listener v5.4.0
+#10 10.59   Downloaded prometheus-client-derive-encode v0.4.2
+#10 10.59   Downloaded prettyplease v0.2.32
+#10 10.59   Downloaded enum-as-inner v0.6.1
+#10 10.60   Downloaded darling v0.13.4
+#10 10.60   Downloaded zstd-safe v5.0.2+zstd.1.5.2
+#10 10.60   Downloaded digest v0.9.0
+#10 10.60   Downloaded pin-project-lite v0.2.16
+#10 10.60   Downloaded pin-project-internal v1.1.10
+#10 10.60   Downloaded ethereum_ssz_derive v0.8.3
+#10 10.60   Downloaded ethabi v18.0.0
+#10 10.61   Downloaded linux-raw-sys v0.4.15
+#10 10.64   Downloaded enr v0.13.0
+#10 10.65   Downloaded event-listener-strategy v0.5.4
+#10 10.65   Downloaded regex-automata v0.1.10
+#10 10.65   Downloaded percent-encoding v2.3.1
+#10 10.65   Downloaded tap v1.0.1
+#10 10.65   Downloaded tagptr v0.2.0
+#10 10.65   Downloaded x509-parser v0.16.0
+#10 10.65   Downloaded x25519-dalek v2.0.1
+#10 10.66   Downloaded eventsource-stream v0.2.3
+#10 10.66   Downloaded powerfmt v0.2.0
+#10 10.66   Downloaded pin-utils v0.1.0
+#10 10.66   Downloaded target_info v0.1.0
+#10 10.66   Downloaded parity-scale-codec v3.7.4
+#10 10.66   Downloaded litemap v0.7.5
+#10 10.66   Downloaded libp2p-upnp v0.4.0
+#10 10.66   Downloaded fallible-streaming-iterator v0.1.9
+#10 10.66   Downloaded zeroize_derive v1.4.2
+#10 10.66   Downloaded zeroize v1.8.1
+#10 10.66   Downloaded zerofrom-derive v0.1.6
+#10 10.66   Downloaded wyz v0.2.0
+#10 10.67   Downloaded write16 v1.0.0
+#10 10.67   Downloaded tiny-bip39 v1.0.0
+#10 10.67   Downloaded tikv-jemalloc-ctl v0.6.0
+#10 10.67   Downloaded sha3 v0.9.1
+#10 10.67   Downloaded rayon v1.10.0
+#10 10.68   Downloaded sha3-asm v0.1.4
+#10 10.68   Downloaded scale-info-derive v2.11.6
+#10 10.68   Downloaded salsa20 v0.8.1
+#10 10.69   Downloaded rand_xorshift v0.3.0
+#10 10.69   Downloaded primeorder v0.13.6
+#10 10.69   Downloaded regex-syntax v0.8.5
+#10 10.70   Downloaded wait-timeout v0.2.1
+#10 10.70   Downloaded version_check v0.9.5
+#10 10.70   Downloaded utf8_iter v1.0.4
+#10 10.70   Downloaded reqwest v0.11.27
+#10 10.70   Downloaded openssl-probe v0.1.6
+#10 10.70   Downloaded nu-ansi-term v0.46.0
+#10 10.70   Downloaded local-ip-address v0.6.5
+#10 10.71   Downloaded rlp v0.5.2
+#10 10.71   Downloaded scheduled-thread-pool v0.2.7
+#10 10.71   Downloaded proptest-derive v0.5.1
+#10 10.71   Downloaded lock_api v0.4.12
+#10 10.71   Downloaded data-encoding-macro-internal v0.1.16
+#10 10.71   Downloaded data-encoding-macro v0.1.18
+#10 10.71   Downloaded linux-raw-sys v0.9.4
+#10 10.75   Downloaded tracing-log v0.2.0
+#10 10.75   Downloaded form_urlencoded v1.2.1
+#10 10.75   Downloaded zerovec v0.10.4
+#10 10.76   Downloaded tinystr v0.7.6
+#10 10.76   Downloaded num-conv v0.1.0
+#10 10.76   Downloaded tracing-attributes v0.1.28
+#10 10.76   Downloaded syn v1.0.109
+#10 10.77   Downloaded superstruct v0.8.0
+#10 10.77   Downloaded derive_arbitrary v1.4.1
+#10 10.77   Downloaded derivative v2.2.0
+#10 10.77   Downloaded deranged v0.4.0
+#10 10.77   Downloaded der-parser v9.0.0
+#10 10.77   Downloaded der v0.6.1
+#10 10.78   Downloaded delay_map v0.4.1
+#10 10.78   Downloaded db-key v0.0.5
+#10 10.78   Downloaded uint v0.9.5
+#10 10.78   Downloaded tracing-subscriber v0.3.19
+#10 10.78   Downloaded sharded-slab v0.1.7
+#10 10.79   Downloaded rfc6979 v0.4.0
+#10 10.79   Downloaded openssl v0.10.72
+#10 10.79   Downloaded try-lock v0.2.5
+#10 10.79   Downloaded tree_hash v0.9.1
+#10 10.80   Downloaded shlex v1.3.0
+#10 10.80   Downloaded portable-atomic v1.11.0
+#10 10.80   Downloaded der v0.7.10
+#10 10.81   Downloaded fs2 v0.4.3
+#10 10.81   Downloaded pkg-config v0.3.32
+#10 10.81   Downloaded unicode-normalization v0.1.24
+#10 10.81   Downloaded num-bigint-dig v0.8.4
+#10 10.81   Downloaded pbkdf2 v0.11.0
+#10 10.81   Downloaded parking v2.2.1
+#10 10.82   Downloaded darling_core v0.20.11
+#10 10.82   Downloaded unsafe-libyaml v0.2.11
+#10 10.82   Downloaded slab v0.4.9
+#10 10.82   Downloaded darling_core v0.13.4
+#10 10.82   Downloaded darling v0.20.11
+#10 10.82   Downloaded ruint v1.14.0
+#10 10.83   Downloaded openssl-macros v0.1.1
+#10 10.83   Downloaded ethbloom v0.13.0
+#10 10.83   Downloaded universal-hash v0.5.1
+#10 10.83   Downloaded unicode-xid v0.2.6
+#10 10.83   Downloaded rustix v1.0.7
+#10 10.84   Downloaded rustix v0.36.17
+#10 10.85   Downloaded dirs v3.0.2
+#10 10.86   Downloaded libsqlite3-sys v0.25.2
+#10 10.92   Downloaded unsigned-varint v0.7.2
+#10 10.92   Downloaded rust_eth_kzg v0.5.4
+#10 10.93   Downloaded ethereum_serde_utils v0.7.0
+#10 10.93   Downloaded ethereum_hashing v0.7.0
+#10 10.93   Downloaded url v2.5.4
+#10 10.93   Downloaded untrusted v0.9.0
+#10 10.94   Downloaded tinyvec v1.9.0
+#10 10.94   Downloaded once_cell v1.21.3
+#10 10.94   Downloaded derive_more v1.0.0
+#10 10.94   Downloaded darling_macro v0.13.4
+#10 10.94   Downloaded utf16_iter v1.0.5
+#10 10.94   Downloaded tracing v0.1.41
+#10 10.95   Downloaded tower-service v0.3.3
+#10 10.95   Downloaded toml_edit v0.22.26
+#10 10.96   Downloaded rustls v0.23.27
+#10 10.97   Downloaded procfs v0.15.1
+#10 10.97   Downloaded primitive-types v0.12.2
+#10 10.97   Downloaded tinyvec_macros v0.1.1
+#10 10.97   Downloaded rtnetlink v0.13.1
+#10 10.98   Downloaded prometheus-client v0.22.3
+#10 10.98   Downloaded proc-macro-crate v1.3.1
+#10 10.98   Downloaded rustix v0.38.44
+#10 10.99   Downloaded rustc_version v0.3.3
+#10 10.99   Downloaded open-fastrlp-derive v0.1.1
+#10 10.99   Downloaded matchers v0.1.0
+#10 11.00   Downloaded maplit v1.0.2
+#10 11.00   Downloaded polyval v0.6.2
+#10 11.00   Downloaded pin-project v1.1.10
+#10 11.00   Downloaded rustc-hex v2.1.0
+#10 11.00   Downloaded ruint-macro v1.2.1
+#10 11.00   Downloaded rpds v0.11.0
+#10 11.01   Downloaded pbkdf2 v0.8.0
+#10 11.01   Downloaded opaque-debug v0.3.1
+#10 11.01   Downloaded oid-registry v0.7.1
+#10 11.01   Downloaded primitive-types v0.10.1
+#10 11.01   Downloaded log v0.4.27
+#10 11.01   Downloaded libp2p-yamux v0.47.0
+#10 11.01   Downloaded libp2p-mdns v0.47.0
+#10 11.01   Downloaded libp2p-identity v0.2.11
+#10 11.02   Downloaded educe v0.6.0
+#10 11.02   Downloaded ed25519 v2.2.3
+#10 11.02   Downloaded ecdsa v0.14.8
+#10 11.02   Downloaded displaydoc v0.2.5
+#10 11.02   Downloaded crate_crypto_kzg_multi_open_fk20 v0.5.4
+#10 11.02   Downloaded core2 v0.4.0
+#10 11.02   Downloaded zstd-sys v2.0.15+zstd.1.5.7
+#10 11.04   Downloaded zerofrom v0.1.6
+#10 11.04   Downloaded crate_crypto_internal_eth_kzg_erasure_codes v0.5.4
+#10 11.04   Downloaded crate_crypto_internal_eth_kzg_bls12_381 v0.5.4
+#10 11.04   Downloaded cpufeatures v0.2.17
+#10 11.04   Downloaded vec_map v0.8.2
+#10 11.04   Downloaded vcpkg v0.2.15
+#10 11.06   Downloaded valuable v0.1.1
+#10 11.06   Downloaded toml_edit v0.19.15
+#10 11.07   Downloaded tokio-util v0.7.15
+#10 11.07   Downloaded tokio-stream v0.1.17
+#10 11.08   Downloaded time-macros v0.2.22
+#10 11.08   Downloaded spki v0.7.3
+#10 11.08   Downloaded rusty-fork v0.3.0
+#10 11.08   Downloaded rustversion v1.0.20
+#10 11.08   Downloaded num-integer v0.1.46
+#10 11.08   Downloaded ed25519-dalek v2.1.1
+#10 11.08   Downloaded ecdsa v0.16.9
+#10 11.08   Downloaded dtoa v1.0.10
+#10 11.09   Downloaded dirs-sys v0.3.7
+#10 11.09   Downloaded crate_crypto_internal_eth_kzg_maybe_rayon v0.5.4
+#10 11.09   Downloaded zerocopy v0.8.25
+#10 11.10   Downloaded rw-stream-sink v0.4.0
+#10 11.10   Downloaded rand_chacha v0.3.1
+#10 11.10   Downloaded netlink-proto v0.11.5
+#10 11.10   Downloaded rustls-webpki v0.103.2
+#10 11.10   Downloaded rand v0.9.1
+#10 11.11   Downloaded nix v0.26.4
+#10 11.11   Downloaded netlink-packet-route v0.17.1
+#10 11.12   Downloaded flate2 v1.1.1
+#10 11.12   Downloaded wyz v0.5.1
+#10 11.12   Downloaded yoke-derive v0.7.5
+#10 11.12   Downloaded foldhash v0.1.5
+#10 11.13   Downloaded foreign-types-shared v0.1.1
+#10 11.13   Downloaded rand_core v0.6.4
+#10 11.13   Downloaded simple_asn1 v0.6.3
+#10 11.13   Downloaded tokio-native-tls v0.3.1
+#10 11.13   Downloaded foreign-types v0.3.2
+#10 11.13   Downloaded thiserror v1.0.69
+#10 11.13   Downloaded rustls-webpki v0.101.7
+#10 11.14   Downloaded rand v0.8.5
+#10 11.14   Downloaded radium v0.6.2
+#10 11.14   Downloaded quick-error v1.2.3
+#10 11.14   Downloaded neli v0.6.5
+#10 11.14   Downloaded multibase v0.9.1
+#10 11.14   Downloaded ethabi v16.0.0
+#10 11.15   Downloaded fnv v1.0.7
+#10 11.15   Downloaded fixed-hash v0.7.0
+#10 11.15   Downloaded ffi-opaque v2.0.1
+#10 11.15   Downloaded curve25519-dalek v4.1.3
+#10 11.16   Downloaded r2d2_sqlite v0.21.0
+#10 11.16   Downloaded more-asserts v0.3.1
+#10 11.16   Downloaded ctr v0.9.2
+#10 11.16   Downloaded crypto-mac v0.11.0
+#10 11.16   Downloaded web-time v1.1.0
+#10 11.16   Downloaded num_cpus v1.16.0
+#10 11.16   Downloaded fastrlp v0.3.1
+#10 11.16   Downloaded yoke v0.7.5
+#10 11.16   Downloaded yasna v0.5.2
+#10 11.16   Downloaded yamux v0.13.4
+#10 11.16   Downloaded uuid v1.16.0
+#10 11.17   Downloaded unicode-ident v1.0.18
+#10 11.17   Downloaded triomphe v0.1.14
+#10 11.17   Downloaded sha2 v0.10.9
+#10 11.17   Downloaded fastrand v2.3.0
+#10 11.17   Downloaded crypto-bigint v0.5.5
+#10 11.17   Downloaded triehash v0.8.4
+#10 11.17   Downloaded strum_macros v0.24.3
+#10 11.18   Downloaded strum v0.24.1
+#10 11.18   Downloaded sha2 v0.9.9
+#10 11.18   Downloaded sha1 v0.10.6
+#10 11.18   Downloaded serde_urlencoded v0.7.1
+#10 11.18   Downloaded leveldb-sys v2.0.9
+#10 11.20   Downloaded fastrlp v0.4.0
+#10 11.20   Downloaded enum-ordinalize-derive v4.3.1
+#10 11.20   Downloaded crypto-common v0.1.6
+#10 11.20   Downloaded crunchy v0.2.3
+#10 11.20   Downloaded strsim v0.11.1
+#10 11.20   Downloaded strsim v0.10.0
+#10 11.20   Downloaded serde_yaml v0.9.34+deprecated
+#10 11.20   Downloaded libc v0.2.172
+#10 11.23   Downloaded rusqlite v0.28.0
+#10 11.23   Downloaded pest v2.8.0
+#10 11.24   Downloaded enum-ordinalize v4.3.0
+#10 11.24   Downloaded crossbeam-channel v0.5.15
+#10 11.24   Downloaded yamux v0.12.1
+#10 11.24   Downloaded xmltree v0.10.3
+#10 11.24   Downloaded xml-rs v0.8.26
+#10 11.24   Downloaded discv5 v0.9.1
+#10 11.25   Downloaded writeable v0.5.5
+#10 11.25   Downloaded k256 v0.13.4
+#10 11.25   Downloaded k256 v0.11.6
+#10 11.25   Downloaded itertools v0.13.0
+#10 11.26   Downloaded itertools v0.10.5
+#10 11.26   Downloaded idna v1.0.3
+#10 11.26   Downloaded rustc-hash v2.1.1
+#10 11.26   Downloaded libp2p v0.55.0
+#10 11.27   Downloaded indexmap v2.9.0
+#10 11.27   Downloaded impl-serde v0.4.0
+#10 11.27   Downloaded libp2p-allow-block-list v0.5.0
+#10 11.27   Downloaded serde_repr v0.1.20
+#10 11.27   Downloaded scrypt v0.7.0
+#10 11.27   Downloaded igd-next v0.16.1
+#10 11.27   Downloaded spki v0.6.0
+#10 11.27   Downloaded netlink-packet-utils v0.5.2
+#10 11.27   Downloaded thread_local v1.1.8
+#10 11.28   Downloaded static_assertions v1.1.0
+#10 11.28   Downloaded jobserver v0.1.33
+#10 11.28   Downloaded ipnet v2.11.0
+#10 11.28   Downloaded icu_locid_transform_data v1.5.1
+#10 11.28   Downloaded rustls-webpki v0.102.8
+#10 11.29   Downloaded leveldb v0.8.6
+#10 11.29   Downloaded lazy_static v1.5.0
+#10 11.29   Downloaded keccak-asm v0.1.4
+#10 11.29   Downloaded scopeguard v1.2.0
+#10 11.29   Downloaded scoped-tls v1.0.1
+#10 11.29   Downloaded resolv-conf v0.7.3
+#10 11.29   Downloaded reqwest-eventsource v0.5.0
+#10 11.30   Downloaded r2d2 v0.8.10
+#10 11.30   Downloaded quote v1.0.40
+#10 11.30   Downloaded quinn-udp v0.5.12
+#10 11.30   Downloaded quinn v0.11.7
+#10 11.30   Downloaded quick-protobuf-codec v0.3.1
+#10 11.30   Downloaded proc-macro-crate v3.3.0
+#10 11.30   Downloaded ppv-lite86 v0.2.21
+#10 11.30   Downloaded poly1305 v0.8.0
+#10 11.31   Downloaded itertools v0.12.1
+#10 11.31   Downloaded icu_normalizer_data v1.5.1
+#10 11.31   Downloaded bzip2-sys v0.1.13+1.0.8
+#10 11.32   Downloaded multistream-select v0.13.0
+#10 11.32   Downloaded lazycell v1.3.0
+#10 11.32   Downloaded is_terminal_polyfill v1.70.1
+#10 11.32   Downloaded impl-codec v0.6.0
+#10 11.32   Downloaded c-kzg v1.0.3
+#10 11.34   Downloaded bindgen v0.69.5
+#10 11.34   Downloaded ident_case v1.0.1
+#10 11.34   Downloaded clap_builder v4.5.37
+#10 11.35   Downloaded ark-ff v0.4.2
+#10 11.35   Downloaded libm v0.2.15
+#10 11.35   Downloaded impl-rlp v0.3.0
+#10 11.35   Downloaded igd-next v0.15.1
+#10 11.36   Downloaded ark-ff v0.3.0
+#10 11.36   Downloaded arbitrary v1.4.1
+#10 11.36   Downloaded impl-trait-for-tuples v0.2.3
+#10 11.36   Downloaded anyhow v1.0.98
+#10 11.36   Downloaded icu_properties_data v1.5.1
+#10 11.37   Downloaded clap v4.5.37
+#10 11.38   Downloaded attohttpc v0.24.1
+#10 11.38   Downloaded ark-ff-asm v0.3.0
+#10 11.38   Downloaded archery v0.4.0
+#10 11.38   Downloaded anstyle-query v1.1.2
+#10 11.38   Downloaded anstyle-parse v0.2.6
+#10 11.38   Downloaded anstyle v1.0.10
+#10 11.38   Downloaded anstream v0.6.18
+#10 11.38   Downloaded hyper-tls v0.5.0
+#10 11.38   Downloaded colorchoice v1.0.3
+#10 11.38   Downloaded clap_lex v0.7.4
+#10 11.39   Downloaded clap_derive v4.5.32
+#10 11.39   Downloaded cipher v0.4.4
+#10 11.39   Downloaded cipher v0.3.0
+#10 11.39   Downloaded asn1-rs-derive v0.5.1
+#10 11.39   Downloaded cmake v0.1.54
+#10 11.39   Downloaded blake2 v0.10.6
+#10 11.39   Downloaded hyper-util v0.1.11
+#10 11.39   Downloaded hyper-rustls v0.24.2
+#10 11.39   Downloaded cargo_metadata v0.19.2
+#10 11.40   Downloaded icu_properties v1.5.1
+#10 11.40   Downloaded hashbrown v0.14.5
+#10 11.40   Downloaded const_format_proc_macros v0.2.34
+#10 11.40   Downloaded concurrent-queue v2.5.0
+#10 11.40   Downloaded auto_impl v1.3.0
+#10 11.41   Downloaded arrayref v0.3.9
+#10 11.41   Downloaded ark-serialize v0.4.2
+#10 11.41   Downloaded ark-ff-macros v0.4.2
+#10 11.41   Downloaded bit-set v0.8.0
+#10 11.41   Downloaded cargo-platform v0.1.9
+#10 11.41   Downloaded async-channel v1.9.0
+#10 11.41   Downloaded icu_normalizer v1.5.0
+#10 11.42   Downloaded h2 v0.4.10
+#10 11.42   Downloaded futures-util v0.3.31
+#10 11.43   Downloaded bitvec v0.20.4
+#10 11.44   Downloaded autocfg v1.4.0
+#10 11.44   Downloaded async-recursion v1.1.1
+#10 11.44   Downloaded hyper v0.14.32
+#10 11.44   Downloaded http-body v1.0.1
+#10 11.44   Downloaded home v0.5.11
+#10 11.44   Downloaded hashlink v0.9.1
+#10 11.44   Downloaded byte-slice-cast v1.2.3
+#10 11.45   Downloaded block-padding v0.2.1
+#10 11.45   Downloaded base16ct v0.2.0
+#10 11.45   Downloaded atomic-waker v1.1.2
+#10 11.45   Downloaded async-trait v0.1.88
+#10 11.45   Downloaded hyper v1.6.0
+#10 11.45   Downloaded hmac v0.11.0
+#10 11.45   Downloaded hkdf v0.12.4
+#10 11.46   Downloaded headers-core v0.2.0
+#10 11.46   Downloaded headers v0.3.9
+#10 11.46   Downloaded hashlink v0.8.4
+#10 11.46   Downloaded h2 v0.3.26
+#10 11.46   Downloaded glob v0.3.2
+#10 11.46   Downloaded cexpr v0.6.0
+#10 11.47   Downloaded bytes v1.10.1
+#10 11.47   Downloaded bs58 v0.5.1
+#10 11.47   Downloaded bs58 v0.4.0
+#10 11.47   Downloaded blst v0.3.14
+#10 11.48   Downloaded bitflags v2.9.0
+#10 11.48   Downloaded bit-vec v0.8.0
+#10 11.48   Downloaded base16ct v0.1.1
+#10 11.48   Downloaded asynchronous-codec v0.7.0
+#10 11.48   Downloaded ark-std v0.4.0
+#10 11.48   Downloaded ark-std v0.3.0
+#10 11.48   Downloaded hickory-resolver v0.25.0-alpha.5
+#10 11.49   Downloaded hex v0.4.3
+#10 11.49   Downloaded heck v0.4.1
+#10 11.49   Downloaded group v0.13.0
+#10 11.49   Downloaded git-version-macro v0.3.9
+#10 11.49   Downloaded futures-task v0.3.31
+#10 11.49   Downloaded futures-macro v0.3.31
+#10 11.49   Downloaded chacha20poly1305 v0.10.1
+#10 11.49   Downloaded blstrs v0.7.1
+#10 11.49   Downloaded bitflags v1.3.2
+#10 11.50   Downloaded base-x v0.2.11
+#10 11.50   Downloaded asn1_der v0.7.6
+#10 11.50   Downloaded arrayvec v0.7.6
+#10 11.50   Downloaded hashbrown v0.15.3
+#10 11.50   Downloaded getrandom v0.2.16
+#10 11.50   Downloaded asn1-rs v0.6.2
+#10 11.51   Downloaded ark-ff-asm v0.4.2
+#10 11.51   Downloaded httparse v1.10.1
+#10 11.51   Downloaded http-body v0.4.6
+#10 11.51   Downloaded http v0.2.12
+#10 11.51   Downloaded heck v0.5.0
+#10 11.51   Downloaded cfg_aliases v0.2.1
+#10 11.51   Downloaded cc v1.2.21
+#10 11.52   Downloaded block-buffer v0.10.4
+#10 11.52   Downloaded block-buffer v0.9.0
+#10 11.52   Downloaded async-channel v2.3.1
+#10 11.52   Downloaded asn1-rs-impl v0.2.0
+#10 11.52   Downloaded ark-serialize v0.3.0
+#10 11.52   Downloaded alloy-rlp-derive v0.3.11
+#10 11.52   Downloaded bincode v1.3.3
+#10 11.52   Downloaded base64ct v1.7.3
+#10 11.53   Downloaded openssl-src v300.5.0+3.5.0
+#10 11.87    Compiling proc-macro2 v1.0.95
+#10 11.87    Compiling unicode-ident v1.0.18
+#10 11.87    Compiling serde v1.0.219
+#10 11.87    Compiling libc v0.2.172
+#10 11.87    Compiling cfg-if v1.0.0
+#10 11.88    Compiling shlex v1.3.0
+#10 11.88    Compiling autocfg v1.4.0
+#10 11.88    Compiling zerocopy v0.8.25
+#10 11.88    Compiling typenum v1.18.0
+#10 12.07    Compiling version_check v0.9.5
+#10 12.11    Compiling memchr v2.7.4
+#10 12.15    Compiling once_cell v1.21.3
+#10 12.38    Compiling generic-array v0.14.7
+#10 12.38    Compiling subtle v2.6.1
+#10 12.48    Compiling pin-project-lite v0.2.16
+#10 12.53    Compiling fnv v1.0.7
+#10 12.55    Compiling itoa v1.0.15
+#10 12.57    Compiling libm v0.2.15
+#10 12.57    Compiling const-oid v0.9.6
+#10 12.61    Compiling log v0.4.27
+#10 12.65    Compiling pkg-config v0.3.32
+#10 12.83    Compiling slab v0.4.9
+#10 12.89    Compiling radium v0.7.0
+#10 12.93    Compiling quote v1.0.40
+#10 13.01    Compiling unicode-xid v0.2.6
+#10 13.01    Compiling allocator-api2 v0.2.21
+#10 13.02    Compiling paste v1.0.15
+#10 13.05    Compiling jobserver v0.1.33
+#10 13.06    Compiling futures-core v0.3.31
+#10 13.11    Compiling syn v2.0.101
+#10 13.14    Compiling lock_api v0.4.12
+#10 13.18    Compiling parking_lot_core v0.9.10
+#10 13.20    Compiling equivalent v1.0.2
+#10 13.23    Compiling cc v1.2.21
+#10 13.23    Compiling foldhash v0.1.5
+#10 13.29    Compiling futures-io v0.3.31
+#10 13.33    Compiling tracing-core v0.1.33
+#10 13.40    Compiling futures-sink v0.3.31
+#10 13.42    Compiling num-traits v0.2.19
+#10 13.43    Compiling byteorder v1.5.0
+#10 13.45    Compiling tap v1.0.1
+#10 13.51    Compiling stable_deref_trait v1.2.0
+#10 13.55    Compiling vcpkg v0.2.15
+#10 13.60    Compiling futures-channel v0.3.31
+#10 13.62    Compiling pin-utils v0.1.0
+#10 13.65    Compiling futures-task v0.3.31
+#10 13.71    Compiling ruint-macro v1.2.1
+#10 13.76    Compiling spin v0.9.8
+#10 13.79    Compiling getrandom v0.3.2
+#10 13.84    Compiling lazy_static v1.5.0
+#10 13.87    Compiling untrusted v0.9.0
+#10 13.96    Compiling getrandom v0.2.16
+#10 14.06    Compiling rand_core v0.6.4
+#10 14.07    Compiling cpufeatures v0.2.17
+#10 14.11    Compiling num_cpus v1.16.0
+#10 14.14    Compiling socket2 v0.5.9
+#10 14.19    Compiling mio v1.0.3
+#10 14.25    Compiling rand_xorshift v0.3.0
+#10 14.29    Compiling ppv-lite86 v0.2.21
+#10 14.30    Compiling signal-hook-registry v1.4.5
+#10 14.36    Compiling crunchy v0.2.3
+#10 14.45    Compiling static_assertions v1.1.0
+#10 14.46    Compiling rand_chacha v0.3.1
+#10 14.67    Compiling rand v0.8.5
+#10 14.95    Compiling icu_locid_transform_data v1.5.1
+#10 14.95    Compiling ring v0.17.14
+#10 14.99    Compiling scopeguard v1.2.0
+#10 15.07    Compiling wyz v0.5.1
+#10 15.07    Compiling funty v2.0.0
+#10 15.18    Compiling icu_properties_data v1.5.1
+#10 15.24    Compiling bitflags v2.9.0
+#10 15.25    Compiling crossbeam-utils v0.8.21
+#10 15.30    Compiling either v1.15.0
+#10 15.31    Compiling icu_normalizer_data v1.5.1
+#10 15.47    Compiling bitvec v1.0.1
+#10 15.50    Compiling syn v1.0.109
+#10 15.56    Compiling thiserror v1.0.69
+#10 15.56    Compiling tiny-keccak v2.0.2
+#10 15.68    Compiling regex-syntax v0.8.5
+#10 15.81    Compiling rustix v1.0.7
+#10 15.88    Compiling hex v0.4.3
+#10 16.03    Compiling linux-raw-sys v0.9.4
+#10 16.08    Compiling ryu v1.0.20
+#10 16.10    Compiling serde_json v1.0.140
+#10 16.22    Compiling fastrand v2.3.0
+#10 16.23    Compiling wait-timeout v0.2.1
+#10 16.23    Compiling thiserror v2.0.12
+#10 16.33    Compiling writeable v0.5.5
+#10 16.46    Compiling base64ct v1.7.3
+#10 16.49    Compiling bit-vec v0.8.0
+#10 16.65    Compiling litemap v0.7.5
+#10 16.72    Compiling quick-error v1.2.3
+#10 16.73    Compiling bit-set v0.8.0
+#10 16.76    Compiling unarray v0.1.4
+#10 16.85    Compiling ident_case v1.0.1
+#10 16.86    Compiling byte-slice-cast v1.2.3
+#10 16.87    Compiling semver v1.0.26
+#10 17.01    Compiling synstructure v0.13.2
+#10 17.05    Compiling percent-encoding v2.3.1
+#10 17.25    Compiling form_urlencoded v1.2.1
+#10 17.43    Compiling write16 v1.0.0
+#10 17.50    Compiling utf8_iter v1.0.4
+#10 17.55    Compiling utf16_iter v1.0.5
+#10 17.64    Compiling ahash v0.8.12
+#10 17.72    Compiling blst v0.3.14
+#10 17.73    Compiling pem-rfc7468 v0.7.0
+#10 17.78    Compiling num-integer v0.1.46
+#10 17.93    Compiling threadpool v1.8.1
+#10 18.25    Compiling strsim v0.11.1
+#10 18.34    Compiling rayon-core v1.12.1
+#10 18.47    Compiling ff v0.13.1
+#10 18.49    Compiling darling_core v0.20.11
+#10 18.57    Compiling group v0.13.0
+#10 18.80    Compiling tempfile v3.19.1
+#10 18.97    Compiling rusty-fork v0.3.0
+#10 19.13    Compiling serde_derive v1.0.219
+#10 19.78    Compiling zeroize_derive v1.4.2
+#10 19.85    Compiling derive_arbitrary v1.4.1
+#10 20.09    Compiling tracing-attributes v0.1.28
+#10 20.21    Compiling zerofrom-derive v0.1.6
+#10 20.42    Compiling displaydoc v0.2.5
+#10 20.43    Compiling yoke-derive v0.7.5
+#10 20.62    Compiling arbitrary v1.4.1
+#10 20.70    Compiling zerovec-derive v0.10.3
+#10 20.90    Compiling alloy-rlp-derive v0.3.11
+#10 21.15    Compiling tokio-macros v2.5.0
+#10 21.42    Compiling smallvec v1.15.0
+#10 21.55    Compiling tracing v0.1.41
+#10 21.59    Compiling futures-macro v0.3.31
+#10 21.62    Compiling derive_more-impl v2.0.1
+#10 21.64    Compiling proptest-derive v0.5.1
+#10 21.83    Compiling icu_provider_macros v1.5.0
+#10 21.90    Compiling parking_lot v0.12.3
+#10 21.99    Compiling thiserror-impl v1.0.69
+#10 22.31    Compiling zerofrom v0.1.6
+#10 22.39    Compiling yoke v0.7.5
+#10 22.50    Compiling futures-util v0.3.31
+#10 22.54    Compiling zerovec v0.10.4
+#10 23.11    Compiling proptest v1.6.0
+#10 23.20    Compiling thiserror-impl v2.0.12
+#10 23.60    Compiling openssl-src v300.5.0+3.5.0
+#10 23.81    Compiling tinystr v0.7.6
+#10 23.99    Compiling icu_locid v1.5.0
+#10 24.16    Compiling icu_collections v1.5.0
+#10 24.29    Compiling bitflags v1.3.2
+#10 24.33    Compiling httparse v1.10.1
+#10 24.62    Compiling icu_provider v1.5.0
+#10 24.68    Compiling ethereum_hashing v0.7.0
+#10 24.85    Compiling openssl-sys v0.9.108
+#10 25.39    Compiling hashbrown v0.15.3
+#10 25.49    Compiling zeroize v1.8.1
+#10 25.52    Compiling bytes v1.10.1
+#10 25.84    Compiling const-hex v1.14.0
+#10 25.86    Compiling derive_more v2.0.1
+#10 25.91    Compiling icu_locid_transform v1.5.0
+#10 26.03    Compiling tokio v1.45.0
+#10 26.13    Compiling crypto-common v0.1.6
+#10 26.15    Compiling block-buffer v0.10.4
+#10 26.19    Compiling alloy-rlp v0.3.11
+#10 26.27    Compiling digest v0.10.7
+#10 26.31    Compiling ruint v1.14.0
+#10 26.41    Compiling sha2 v0.10.9
+#10 26.43    Compiling hmac v0.12.1
+#10 26.51    Compiling futures-executor v0.3.31
+#10 26.63    Compiling icu_properties v1.5.1
+#10 26.93    Compiling alloy-primitives v0.8.25
+#10 27.77    Compiling futures v0.3.31
+#10 27.84    Compiling indexmap v2.9.0
+#10 28.35    Compiling rustc_version v0.4.1
+#10 28.36    Compiling der v0.7.10
+#10 28.70    Compiling icu_normalizer v1.5.0
+#10 28.77    Compiling darling_macro v0.20.11
+#10 28.79    Compiling base16ct v0.2.0
+#10 28.97    Compiling ethereum_serde_utils v0.7.0
+#10 29.33    Compiling idna_adapter v1.2.0
+#10 29.36    Compiling signature v2.2.0
+#10 29.39    Compiling idna v1.0.3
+#10 29.41    Compiling darling v0.20.11
+#10 29.43    Compiling crypto-bigint v0.5.5
+#10 29.44    Compiling itertools v0.13.0
+#10 29.82    Compiling url v2.5.4
+#10 30.51    Compiling spki v0.7.3
+#10 30.74    Compiling tokio-util v0.7.15
+#10 31.41    Compiling pkcs8 v0.10.2
+#10 31.60    Compiling sec1 v0.7.3
+#10 31.84    Compiling elliptic-curve v0.13.8
+#10 31.98    Compiling ethereum_ssz v0.8.3
+#10 32.00    Compiling curve25519-dalek v4.1.3
+#10 32.11    Compiling libsqlite3-sys v0.25.2
+#10 32.12    Compiling strsim v0.10.0
+#10 32.22    Compiling darling_core v0.13.4
+#10 32.36    Compiling ethereum_ssz_derive v0.8.3
+#10 32.36    Compiling rfc6979 v0.4.0
+#10 32.37    Compiling enum-ordinalize-derive v4.3.1
+#10 32.44    Compiling crossbeam-epoch v0.9.18
+#10 32.47    Compiling c-kzg v1.0.3
+#10 32.47    Compiling data-encoding v2.9.0
+#10 32.57    Compiling tree_hash v0.9.1
+#10 32.73    Compiling ecdsa v0.16.9
+#10 32.99    Compiling asynchronous-codec v0.7.0
+#10 33.06    Compiling enum-ordinalize v4.3.0
+#10 33.10    Compiling itertools v0.10.5
+#10 33.24    Compiling aho-corasick v1.1.3
+#10 33.30    Compiling safe_arith v0.1.0 (/lighthouse/consensus/safe_arith)
+#10 33.39    Compiling fixed_bytes v0.1.0 (/lighthouse/consensus/fixed_bytes)
+#10 33.49    Compiling unsigned-varint v0.8.0
+#10 33.54    Compiling educe v0.6.0
+#10 33.72    Compiling ed25519 v2.2.3
+#10 33.79    Compiling num-bigint v0.4.6
+#10 34.23    Compiling darling_macro v0.13.4
+#10 34.43    Compiling regex-automata v0.4.9
+#10 34.89    Compiling data-encoding-macro-internal v0.1.16
+#10 35.00    Compiling ed25519-dalek v2.1.1
+#10 35.06    Compiling darling v0.13.4
+#10 35.41    Compiling k256 v0.13.4
+#10 35.47    Compiling primeorder v0.13.6
+#10 35.66    Compiling pairing v0.23.0
+#10 35.73    Compiling quick-protobuf v0.8.1 (https://github.com/sigp/quick-protobuf.git?rev=681f413312404ab6e51f0b46f39b0075c6f4ebfd#681f4133)
+#10 35.73    Compiling core2 v0.4.0
+#10 35.75    Compiling openssl v0.10.72
+#10 35.88    Compiling multihash v0.19.3
+#10 35.92    Compiling blstrs v0.7.1
+#10 36.00    Compiling p256 v0.13.2
+#10 36.04    Compiling data-encoding-macro v0.1.18
+#10 36.07    Compiling metastruct_macro v0.1.3
+#10 36.14    Compiling hashbrown v0.14.5
+#10 36.47    Compiling hkdf v0.12.4
+#10 36.55    Compiling derivative v2.2.0
+#10 37.04    Compiling regex v1.11.1
+#10 37.30    Compiling base-x v0.2.11
+#10 37.31    Compiling bs58 v0.5.1
+#10 37.41    Compiling asn1_der v0.7.6
+#10 37.52    Compiling multibase v0.9.1
+#10 37.68    Compiling libp2p-identity v0.2.11
+#10 37.90    Compiling crate_crypto_internal_eth_kzg_bls12_381 v0.5.4
+#10 38.30    Compiling bls v0.2.0 (/lighthouse/crypto/bls)
+#10 38.32    Compiling crossbeam-deque v0.8.6
+#10 38.50    Compiling openssl-macros v0.1.1
+#10 38.60    Compiling native-tls v0.2.14
+#10 38.73    Compiling arrayref v0.3.9
+#10 38.75    Compiling rustls v0.21.12
+#10 38.77    Compiling multiaddr v0.18.2
+#10 38.85    Compiling crate_crypto_internal_eth_kzg_polynomial v0.5.4
+#10 39.15    Compiling superstruct v0.8.0
+#10 39.31    Compiling tree_hash_derive v0.9.1
+#10 39.35    Compiling http v0.2.12
+#10 39.46    Compiling test_random_derive v0.2.0 (/lighthouse/common/test_random_derive)
+#10 39.78    Compiling compare_fields_derive v0.2.0 (/lighthouse/common/compare_fields_derive)
+#10 40.04    Compiling context_deserialize_derive v0.1.0 (/lighthouse/consensus/context_deserialize_derive)
+#10 40.27    Compiling opaque-debug v0.3.1
+#10 40.29    Compiling rayon v1.10.0
+#10 40.52    Compiling crate_crypto_internal_eth_kzg_maybe_rayon v0.5.4
+#10 40.59    Compiling crate_crypto_kzg_multi_open_fk20 v0.5.4
+#10 40.78    Compiling crate_crypto_internal_eth_kzg_erasure_codes v0.5.4
+#10 40.97    Compiling hashlink v0.8.4
+#10 41.28    Compiling triomphe v0.1.14
+#10 41.36    Compiling vec_map v0.8.2
+#10 41.46    Compiling unsafe-libyaml v0.2.11
+#10 41.52    Compiling fallible-iterator v0.2.0
+#10 41.63    Compiling try-lock v0.2.5
+#10 41.71    Compiling fallible-streaming-iterator v0.1.9
+#10 41.77    Compiling want v0.3.1
+#10 41.89    Compiling rust_eth_kzg v0.5.4
+#10 42.21    Compiling serde_yaml v0.9.34+deprecated
+#10 42.33    Compiling ssz_types v0.10.1
+#10 42.64    Compiling archery v0.4.0
+#10 42.67    Compiling kzg v0.1.0 (/lighthouse/crypto/kzg)
+#10 42.76    Compiling milhouse v0.5.0
+#10 43.08    Compiling rpds v0.11.0
+#10 43.53    Compiling eth2_interop_keypairs v0.2.0 (/lighthouse/common/eth2_interop_keypairs)
+#10 43.58    Compiling context_deserialize v0.1.0 (/lighthouse/consensus/context_deserialize)
+#10 43.60    Compiling metastruct v0.1.3
+#10 43.67    Compiling merkle_proof v0.2.0 (/lighthouse/consensus/merkle_proof)
+#10 43.70    Compiling swap_or_not_shuffle v0.2.0 (/lighthouse/consensus/swap_or_not_shuffle)
+#10 43.84    Compiling compare_fields v0.2.0 (/lighthouse/common/compare_fields)
+#10 43.87    Compiling digest v0.9.0
+#10 43.91    Compiling int_to_bytes v0.2.0 (/lighthouse/consensus/int_to_bytes)
+#10 44.01    Compiling maplit v1.0.2
+#10 44.07    Compiling num-conv v0.1.0
+#10 44.07    Compiling time-core v0.1.4
+#10 44.14    Compiling block-padding v0.2.1
+#10 44.15    Compiling tower-service v0.3.3
+#10 44.23    Compiling block-buffer v0.9.0
+#10 44.31    Compiling arrayvec v0.7.6
+#10 44.38    Compiling futures-timer v3.0.3
+#10 44.54    Compiling keccak v0.1.5
+#10 44.69    Compiling ipnet v2.11.0
+#10 45.09    Compiling rustls-webpki v0.101.7
+#10 45.71    Compiling tinyvec_macros v0.1.1
+#10 45.75    Compiling tinyvec v1.9.0
+#10 45.92    Compiling httpdate v1.0.3
+#10 46.02    Compiling foreign-types-shared v0.1.1
+#10 46.06    Compiling foreign-types v0.3.2
+#10 46.12    Compiling sha2 v0.9.9
+#10 46.14    Compiling http-body v0.4.6
+#10 46.33    Compiling h2 v0.3.26
+#10 46.59    Compiling base64 v0.22.1
+#10 46.93    Compiling sct v0.7.1
+#10 47.09    Compiling base64 v0.21.7
+#10 47.15    Compiling mime v0.3.17
+#10 47.16    Compiling openssl-probe v0.1.6
+#10 47.24    Compiling toml_datetime v0.6.9
+#10 47.40    Compiling serde_urlencoded v0.7.1
+#10 47.62    Compiling heck v0.5.0
+#10 47.67    Compiling powerfmt v0.2.0
+#10 47.83    Compiling deranged v0.4.0
+#10 48.20    Compiling time-macros v0.2.22
+#10 48.44    Compiling pin-project-internal v1.1.10
+#10 48.62    Compiling prometheus v0.13.4
+#10 48.81    Compiling rustversion v1.0.20
+#10 49.09    Compiling rustls-pemfile v1.0.4
+#10 49.53    Compiling tokio-rustls v0.24.1
+#10 49.53    Compiling pin-project v1.1.10
+#10 49.57    Compiling time v0.3.41
+#10 49.68    Compiling sha3 v0.10.8
+#10 50.07    Compiling cipher v0.3.0
+#10 50.20    Compiling encoding_rs v0.8.35
+#10 50.47    Compiling minimal-lexical v0.2.1
+#10 50.65    Compiling webpki-roots v0.25.4
+#10 50.68    Compiling sync_wrapper v0.1.2
+#10 50.74    Compiling nom v7.1.3
+#10 50.79    Compiling hyper v0.14.32
+#10 52.24    Compiling crypto-mac v0.11.0
+#10 52.33    Compiling zstd-sys v2.0.15+zstd.1.5.7
+#10 52.76    Compiling num-bigint-dig v0.8.4
+#10 52.93    Compiling metrics v0.2.0 (/lighthouse/common/metrics)
+#10 53.41    Compiling lru v0.12.5
+#10 53.59    Compiling num-iter v0.1.45
+#10 55.23    Compiling hmac v0.11.0
+#10 55.32    Compiling pbkdf2 v0.8.0
+#10 55.40    Compiling ctr v0.8.0
+#10 55.52    Compiling salsa20 v0.8.1
+#10 55.62    Compiling unicode-normalization v0.1.24
+#10 55.66    Compiling hyper-rustls v0.24.2
+#10 55.88    Compiling rustc-hex v2.1.0
+#10 55.97    Compiling eth2_key_derivation v0.1.0 (/lighthouse/crypto/eth2_key_derivation)
+#10 56.20    Compiling scrypt v0.7.0
+#10 56.36    Compiling aes v0.7.5
+#10 56.55    Compiling enr v0.13.0
+#10 56.55    Compiling sensitive_url v0.1.0 (/lighthouse/common/sensitive_url)
+#10 56.70    Compiling uuid v0.8.2
+#10 56.76    Compiling impl-trait-for-tuples v0.2.3
+#10 56.99    Compiling serde_repr v0.1.20
+#10 57.69    Compiling eth2_keystore v0.1.0 (/lighthouse/crypto/eth2_keystore)
+#10 58.61    Compiling libz-sys v1.1.22
+#10 59.08    Compiling rlp v0.5.2
+#10 59.24    Compiling filesystem v0.1.0 (/lighthouse/common/filesystem)
+#10 59.28    Compiling adler2 v2.0.0
+#10 59.36    Compiling miniz_oxide v0.8.8
+#10 60.05    Compiling crossbeam-channel v0.5.15
+#10 60.26    Compiling concurrent-queue v2.5.0
+#10 60.73    Compiling crc32fast v1.4.2
+#10 60.98    Compiling iana-time-zone v0.1.63
+#10 61.12    Compiling chrono v0.4.41
+#10 61.44    Compiling flate2 v1.1.1
+#10 61.72    Compiling impl-rlp v0.3.0
+#10 61.97    Compiling rustls-pki-types v1.12.0
+#10 62.09    Compiling scheduled-thread-pool v0.2.7
+#10 62.14    Compiling bzip2-sys v0.1.13+1.0.8
+#10 62.44    Compiling zstd-safe v5.0.2+zstd.1.5.2
+#10 62.57    Compiling camino v1.1.9
+#10 62.77    Compiling regex-syntax v0.6.29
+#10 63.02    Compiling r2d2 v0.8.10
+#10 64.64    Compiling regex-automata v0.1.10
+#10 64.83    Compiling inout v0.1.4
+#10 64.99    Compiling anyhow v1.0.98
+#10 65.15    Compiling overload v0.1.1
+#10 65.26    Compiling utf8parse v0.2.2
+#10 65.34    Compiling matchers v0.1.0
+#10 65.37    Compiling anstyle-parse v0.2.6
+#10 65.44    Compiling password-hash v0.4.2
+#10 65.53    Compiling nu-ansi-term v0.46.0
+#10 65.81    Compiling rusqlite v0.28.0
+#10 65.82    Compiling cipher v0.4.4
+#10 66.43    Compiling eventsource-stream v0.2.3
+#10 66.50    Compiling universal-hash v0.5.1
+#10 66.55    Compiling tracing-serde v0.2.0
+#10 66.56    Compiling cargo-platform v0.1.9
+#10 66.59    Compiling uint v0.9.5
+#10 66.67    Compiling sharded-slab v0.1.7
+#10 66.71    Compiling tracing-log v0.2.0
+#10 66.77    Compiling thread_local v1.1.8
+#10 66.81    Compiling anstyle-query v1.1.2
+#10 66.88    Compiling colorchoice v1.0.3
+#10 66.92    Compiling is_terminal_polyfill v1.70.1
+#10 67.00    Compiling anstyle v1.0.10
+#10 67.01    Compiling types v0.2.1 (/lighthouse/consensus/types)
+#10 67.02    Compiling cargo_metadata v0.19.2
+#10 67.18    Compiling anstream v0.6.18
+#10 67.36    Compiling tracing-subscriber v0.3.19
+#10 67.41    Compiling polyval v0.6.2
+#10 67.61    Compiling pbkdf2 v0.11.0
+#10 67.62    Compiling aes v0.8.4
+#10 67.77    Compiling bzip2 v0.4.4
+#10 68.20    Compiling sha1 v0.10.6
+#10 68.32    Compiling terminal_size v0.4.2
+#10 68.39    Compiling clap_lex v0.7.4
+#10 68.65    Compiling web-time v1.1.0
+#10 68.67    Compiling mediatype v0.19.20
+#10 68.72    Compiling constant_time_eq v0.1.5
+#10 68.75    Compiling unsigned-varint v0.7.2
+#10 68.75    Compiling event-listener v2.5.3
+#10 68.82    Compiling multistream-select v0.13.0
+#10 68.98    Compiling tracing-appender v0.2.3
+#10 69.34    Compiling async-channel v1.9.0
+#10 69.46    Compiling clap_builder v4.5.37
+#10 69.53    Compiling workspace_members v0.1.0 (/lighthouse/common/workspace_members)
+#10 69.80    Compiling ghash v0.5.1
+#10 69.88    Compiling ctr v0.9.2
+#10 70.41    Compiling logroller v0.1.8
+#10 70.48    Compiling rw-stream-sink v0.4.0
+#10 70.53    Compiling clap_derive v4.5.32
+#10 70.59    Compiling hashlink v0.9.1
+#10 70.74    Compiling aead v0.5.2
+#10 70.84    Compiling heck v0.4.1
+#10 70.91    Compiling aes-gcm v0.10.3
+#10 70.99    Compiling strum_macros v0.24.3
+#10 71.02    Compiling logging v0.2.0 (/lighthouse/common/logging)
+#10 72.41    Compiling libp2p-core v0.43.0
+#10 72.46    Compiling clap v4.5.37
+#10 72.50    Compiling task_executor v0.1.0 (/lighthouse/common/task_executor)
+#10 72.85    Compiling zstd v0.11.2+zstd.1.5.2
+#10 73.07    Compiling zip v0.6.6
+#10 73.07    Compiling delay_map v0.4.1
+#10 73.17    Compiling uint v0.10.0
+#10 73.27    Compiling more-asserts v0.3.1
+#10 73.32    Compiling discv5 v0.9.1
+#10 73.70    Compiling strum v0.24.1
+#10 73.98    Compiling winnow v0.7.10
+#10 74.40    Compiling parity-scale-codec v3.7.4
+#10 74.53    Compiling const_format_proc_macros v0.2.34
+#10 75.53    Compiling const_format v0.2.34
+#10 75.55    Compiling pem v3.0.5
+#10 75.74    Compiling toml_edit v0.22.26
+#10 76.25    Compiling git-version-macro v0.3.9
+#10 76.74    Compiling rand_core v0.9.3
+#10 76.95    Compiling dirs-sys v0.3.7
+#10 77.06    Compiling dirs v3.0.2
+#10 77.17    Compiling git-version v0.3.9
+#10 77.20    Compiling rand_chacha v0.9.0
+#10 77.47    Compiling proc-macro-crate v3.3.0
+#10 78.48    Compiling r2d2_sqlite v0.21.0
+#10 78.54    Compiling parity-scale-codec-derive v3.7.4
+#10 78.75    Compiling http v1.3.1
+#10 79.67    Compiling derive_more-impl v1.0.0
+#10 80.74    Compiling glob v0.3.2
+#10 81.08    Compiling target_info v0.1.0
+#10 81.13    Compiling lighthouse_version v0.1.0 (/lighthouse/common/lighthouse_version)
+#10 81.19    Compiling derive_more v1.0.0
+#10 81.19    Compiling clang-sys v1.8.1
+#10 81.50    Compiling scale-info-derive v2.11.6
+#10 81.65    Compiling rand v0.9.1
+#10 82.56    Compiling netlink-packet-utils v0.5.2
+#10 82.59    Compiling libp2p-swarm-derive v0.35.0
+#10 83.00    Compiling unicase v2.8.1
+#10 83.20    Compiling prettyplease v0.2.32
+#10 83.30    Compiling rustls v0.22.4
+#10 83.43    Compiling winnow v0.5.40
+#10 83.46    Compiling radium v0.6.2
+#10 83.50    Compiling cfg_aliases v0.2.1
+#10 83.53    Compiling rustix v0.38.44
+#10 83.53    Compiling rustls v0.23.27
+#10 83.73    Compiling libp2p-swarm v0.46.0
+#10 83.94    Compiling scale-info v2.11.6
+#10 84.20    Compiling mime_guess v2.0.5
+#10 84.86    Compiling netlink-packet-core v0.7.0
+#10 85.60    Compiling toml_edit v0.19.15
+#10 86.60    Compiling impl-codec v0.6.0
+#10 86.68    Compiling http-body v1.0.1
+#10 86.78    Compiling rustls-webpki v0.102.8
+#10 87.32    Compiling rustls-webpki v0.103.2
+#10 87.42    Compiling fixed-hash v0.8.0
+#10 87.47    Compiling rusticata-macros v4.1.0
+#10 87.69    Compiling der v0.6.1
+#10 88.56    Compiling impl-serde v0.4.0
+#10 88.62    Compiling asn1-rs-impl v0.2.0
+#10 88.77    Compiling asn1-rs-derive v0.5.1
+#10 89.15    Compiling async-trait v0.1.88
+#10 89.65    Compiling atomic-waker v1.1.2
+#10 89.74    Compiling eth2_config v0.2.0 (/lighthouse/common/eth2_config)
+#10 89.86    Compiling linux-raw-sys v0.4.15
+#10 90.33    Compiling asn1-rs v0.6.2
+#10 90.40    Compiling h2 v0.4.10
+#10 91.82    Compiling spki v0.6.0
+#10 92.25    Compiling proc-macro-crate v1.3.1
+#10 92.52    Compiling eth2_network_config v0.2.0 (/lighthouse/common/eth2_network_config)
+#10 94.27    Compiling headers-core v0.2.0
+#10 94.33    Compiling netlink-sys v0.8.7
+#10 94.49    Compiling integer-sqrt v0.1.5
+#10 94.56    Compiling libloading v0.8.6
+#10 94.76    Compiling wyz v0.2.0
+#10 94.85    Compiling portable-atomic v1.11.0
+#10 95.13    Compiling bindgen v0.69.5
+#10 95.23    Compiling oid-registry v0.7.1
+#10 95.30    Compiling funty v1.1.0
+#10 95.36    Compiling home v0.5.11
+#10 95.42    Compiling which v4.4.2
+#10 95.50    Compiling hyper v1.6.0
+#10 95.66    Compiling bitvec v0.20.4
+#10 96.32    Compiling tokio-rustls v0.25.0
+#10 98.24    Compiling headers v0.3.9
+#10 98.86    Compiling netlink-proto v0.11.5
+#10 100.0    Compiling parity-scale-codec-derive v2.3.1
+#10 100.2    Compiling pkcs8 v0.9.0
+#10 101.0    Compiling cexpr v0.6.0
+#10 101.7    Compiling primitive-types v0.12.2
+#10 101.8    Compiling netlink-packet-route v0.17.1
+#10 102.0    Compiling quinn-udp v0.5.12
+#10 102.3    Compiling rustls-pemfile v2.2.0
+#10 102.9    Compiling quick-protobuf-codec v0.3.1
+#10 103.1    Compiling crypto-bigint v0.4.9
+#10 103.4    Compiling nix v0.26.4
+#10 104.1    Compiling itertools v0.12.1
+#10 105.4    Compiling ff v0.12.1
+#10 105.5    Compiling cmake v0.1.54
+#10 105.6    Compiling rustc-hash v1.1.0
+#10 105.6    Compiling lazycell v1.3.0
+#10 105.7    Compiling base16ct v0.1.1
+#10 105.9    Compiling scoped-tls v1.0.1
+#10 105.9    Compiling nohash-hasher v0.2.0
+#10 105.9    Compiling prometheus-client v0.22.3
+#10 106.0    Compiling moka v0.12.10
+#10 106.1    Compiling xml-rs v0.8.26
+#10 106.1    Compiling warp v0.3.7
+#10 106.6    Compiling leveldb-sys v2.0.9
+#10 107.0    Compiling xmltree v0.10.3
+#10 107.3    Compiling proto_array v0.2.0 (/lighthouse/consensus/proto_array)
+#10 109.2    Compiling slashing_protection v0.1.0 (/lighthouse/validator_client/slashing_protection)
+#10 109.6    Compiling slot_clock v0.2.0 (/lighthouse/common/slot_clock)
+#10 109.9    Compiling state_processing v0.2.0 (/lighthouse/consensus/state_processing)
+#10 110.1    Compiling sec1 v0.3.0
+#10 111.3    Compiling group v0.12.1
+#10 111.4    Compiling rtnetlink v0.13.1
+#10 113.0    Compiling parity-scale-codec v2.3.1
+#10 113.8    Compiling hyper-util v0.1.11
+#10 114.4    Compiling der-parser v9.0.0
+#10 115.0    Compiling ethbloom v0.13.0
+#10 115.1    Compiling http-body-util v0.1.3
+#10 115.4    Compiling quinn v0.11.7
+#10 115.5    Compiling fixed-hash v0.7.0
+#10 115.5    Compiling yasna v0.5.2
+#10 115.6    Compiling enum-as-inner v0.6.1
+#10 115.6    Compiling attohttpc v0.24.1
+#10 116.1    Compiling snow v0.9.6
+#10 116.2    Compiling impl-serde v0.3.2
+#10 116.3    Compiling prometheus-client-derive-encode v0.4.2
+#10 116.3    Compiling async-recursion v1.1.1
+#10 116.9    Compiling uuid v1.16.0
+#10 117.1    Compiling parking v2.2.1
+#10 117.3    Compiling zstd-safe v7.2.4
+#10 117.3    Compiling tagptr v0.2.0
+#10 117.4    Compiling dtoa v1.0.10
+#10 117.4    Compiling rustc-hash v2.1.1
+#10 117.5    Compiling xdelta3 v0.1.5 (http://github.com/sigp/xdelta3-rs?rev=4db64086bb02e9febb584ba93b9d16bb2ae3825a#4db64086)
+#10 117.5    Compiling quinn-proto v0.11.11
+#10 117.8    Compiling event-listener v5.4.0
+#10 118.1    Compiling hickory-proto v0.25.0-alpha.5
+#10 118.7    Compiling rcgen v0.13.2
+#10 119.2    Compiling if-watch v3.2.1
+#10 119.4    Compiling ethereum-types v0.14.1
+#10 119.5    Compiling x509-parser v0.16.0
+#10 120.6    Compiling impl-codec v0.5.1
+#10 120.8    Compiling elliptic-curve v0.12.3
+#10 121.2    Compiling rfc6979 v0.3.1
+#10 121.4    Compiling futures-rustls v0.26.0
+#10 121.5    Compiling futures-bounded v0.2.4
+#10 121.7    Compiling signature v1.6.4
+#10 121.7    Compiling bincode v1.3.3
+#10 122.4    Compiling resolv-conf v0.7.3
+#10 123.4    Compiling ffi-opaque v2.0.1
+#10 123.4    Compiling hickory-resolver v0.25.0-alpha.5
+#10 123.8    Compiling ecdsa v0.14.8
+#10 124.3    Compiling libp2p-identify v0.46.0
+#10 125.0    Compiling libp2p-tls v0.6.1
+#10 127.4    Compiling primitive-types v0.10.1
+#10 130.8    Compiling event-listener-strategy v0.5.4
+#10 130.9    Compiling ethbloom v0.11.1
+#10 131.2    Compiling igd-next v0.15.1
+#10 131.3    Compiling yamux v0.13.4
+#10 131.7    Compiling yamux v0.12.1
+#10 131.8    Compiling x25519-dalek v2.0.1
+#10 131.9    Compiling tokio-stream v0.1.17
+#10 132.4    Compiling open-fastrlp-derive v0.1.1
+#10 132.8    Compiling alloy-eip2930 v0.1.0
+#10 133.0    Compiling alloy-eip7702 v0.1.1
+#10 133.1    Compiling neli-proc-macros v0.1.4
+#10 133.1    Compiling auto_impl v1.3.0
+#10 133.1    Compiling fs2 v0.4.3
+#10 133.3    Compiling snap v1.1.1
+#10 133.3    Compiling io-lifetimes v1.0.11
+#10 133.5    Compiling db-key v0.0.5
+#10 133.5    Compiling lockfile v0.1.0 (/lighthouse/common/lockfile)
+#10 133.6    Compiling alloy-eips v0.3.6
+#10 133.7    Compiling libp2p-yamux v0.47.0
+#10 133.9    Compiling libp2p-noise v0.46.0
+#10 134.0    Compiling neli v0.6.5
+#10 134.1    Compiling open-fastrlp v0.1.4
+#10 134.4    Compiling libp2p-upnp v0.4.0
+#10 134.9    Compiling ethereum-types v0.12.1
+#10 135.3    Compiling async-channel v2.3.1
+#10 135.5    Compiling libp2p-quic v0.12.0
+#10 135.6    Compiling libp2p-metrics v0.16.0
+#10 135.9    Compiling libp2p-dns v0.43.0
+#10 136.3    Compiling k256 v0.11.6
+#10 137.7    Compiling leveldb v0.8.6
+#10 137.9    Compiling ethabi v18.0.0
+#10 138.0    Compiling libp2p-tcp v0.43.0
+#10 138.6    Compiling libp2p-plaintext v0.43.0
+#10 138.9    Compiling libp2p-allow-block-list v0.5.0
+#10 138.9    Compiling libp2p-connection-limits v0.5.0
+#10 139.1    Compiling zstd v0.13.3
+#10 139.2    Compiling simple_asn1 v0.6.3
+#10 139.3    Compiling sha3 v0.9.1
+#10 139.5    Compiling rlp-derive v0.1.0
+#10 139.8    Compiling lmdb-rkv-sys v0.11.2 (https://github.com/sigp/lmdb-rs?rev=f33845c6469b94265319aac0ed5085597862c27e#f33845c6)
+#10 140.1    Compiling lru_cache v0.1.0 (/lighthouse/common/lru_cache)
+#10 140.1    Compiling platforms v2.0.0
+#10 140.2    Compiling hex_fmt v0.3.0
+#10 140.2    Compiling rustix v0.36.17
+#10 140.3    Compiling hash-db v0.15.2
+#10 140.4    Compiling triehash v0.8.4
+#10 140.5    Compiling tiny-bip39 v1.0.0
+#10 140.6    Compiling libp2p-gossipsub v0.49.0 (https://github.com/sigp/rust-libp2p.git?rev=61b2820#61b2820d)
+#10 140.6    Compiling ethers-core v1.0.2
+#10 141.1    Compiling unused_port v0.1.0 (/lighthouse/common/unused_port)
+#10 141.6    Compiling ethabi v16.0.0
+#10 142.5    Compiling jsonwebtoken v9.3.1
+#10 142.5    Compiling libp2p v0.55.0
+#10 143.6    Compiling local-ip-address v0.6.5
+#10 145.2    Compiling alloy-consensus v0.3.6
+#10 145.6    Compiling fork_choice v0.1.0 (/lighthouse/consensus/fork_choice)
+#10 146.0    Compiling libp2p-mplex v0.43.0
+#10 146.6    Compiling keccak-hash v0.10.0
+#10 146.7    Compiling tokio-io-timeout v1.2.0
+#10 146.8    Compiling hash256-std-hasher v0.15.2
+#10 146.8    Compiling procfs v0.15.1
+#10 146.8    Compiling arc-swap v1.7.1
+#10 147.0    Compiling linux-raw-sys v0.1.4
+#10 147.1    Compiling eth2_wallet v0.1.0 (/lighthouse/crypto/eth2_wallet)
+#10 147.4    Compiling nix v0.24.3
+#10 147.7    Compiling derive_more v0.99.20
+#10 148.4    Compiling tikv-jemalloc-sys v0.6.0+5.3.0-1-ge13ca993e8ccb9ba9847cc330696e02839f328f7
+#10 148.8    Compiling unescape v0.1.0
+#10 149.1    Compiling lmdb-rkv v0.14.0 (https://github.com/sigp/lmdb-rs?rev=f33845c6469b94265319aac0ed5085597862c27e#f33845c6)
+#10 149.4    Compiling psutil v3.3.0
+#10 150.1    Compiling rpassword v5.0.1
+#10 150.2    Compiling slasher v0.1.0 (/lighthouse/slasher)
+#10 150.4    Compiling serde_array_query v0.1.0
+#10 150.4    Compiling oneshot_broadcast v0.1.0 (/lighthouse/common/oneshot_broadcast)
+#10 150.5    Compiling validator_metrics v0.1.0 (/lighthouse/validator_client/validator_metrics)
+#10 150.7    Compiling sysinfo v0.26.9
+#10 150.9    Compiling igd-next v0.16.1
+#10 152.4    Compiling bs58 v0.4.0
+#10 152.5    Compiling graffiti_file v0.1.0 (/lighthouse/validator_client/graffiti_file)
+#10 153.1    Compiling eth2_wallet_manager v0.1.0 (/lighthouse/common/eth2_wallet_manager)
+#10 153.3    Compiling fdlimit v0.3.0
+#10 153.4    Compiling lighthouse v7.1.0-beta.0 (/lighthouse/lighthouse)
+#10 170.9    Compiling tikv-jemallocator v0.6.0
+#10 170.9    Compiling tikv-jemalloc-ctl v0.6.0
+#10 171.1    Compiling malloc_utils v0.1.0 (/lighthouse/common/malloc_utils)
+#10 173.1    Compiling tokio-native-tls v0.3.1
+#10 173.2    Compiling hyper-tls v0.5.0
+#10 173.3    Compiling reqwest v0.11.27
+#10 173.9    Compiling pretty_reqwest_error v0.1.0 (/lighthouse/common/pretty_reqwest_error)
+#10 173.9    Compiling reqwest-eventsource v0.5.0
+#10 173.9    Compiling signing_method v0.1.0 (/lighthouse/validator_client/signing_method)
+#10 174.0    Compiling eth2 v0.1.0 (/lighthouse/common/eth2)
+#10 174.2    Compiling clap_utils v0.1.0 (/lighthouse/common/clap_utils)
+#10 174.2    Compiling environment v0.1.2 (/lighthouse/lighthouse/environment)
+#10 174.5    Compiling directory v0.1.0 (/lighthouse/common/directory)
+#10 174.7    Compiling store v0.2.0 (/lighthouse/beacon_node/store)
+#10 179.0    Compiling operation_pool v0.2.0 (/lighthouse/beacon_node/operation_pool)
+#10 179.8    Compiling deposit_contract v0.2.0 (/lighthouse/common/deposit_contract)
+#10 179.9    Compiling builder_client v0.1.0 (/lighthouse/beacon_node/builder_client)
+#10 179.9    Compiling lighthouse_network v0.2.0 (/lighthouse/beacon_node/lighthouse_network)
+#10 179.9    Compiling health_metrics v0.1.0 (/lighthouse/common/health_metrics)
+#10 179.9    Compiling warp_utils v0.1.0 (/lighthouse/common/warp_utils)
+#10 179.9    Compiling beacon_node_fallback v0.1.0 (/lighthouse/validator_client/beacon_node_fallback)
+#10 179.9    Compiling validator_store v0.1.0 (/lighthouse/validator_client/validator_store)
+#10 180.1    Compiling execution_layer v0.1.0 (/lighthouse/beacon_node/execution_layer)
+#10 180.3    Compiling monitoring_api v0.1.0 (/lighthouse/common/monitoring_api)
+#10 180.8    Compiling doppelganger_service v0.1.0 (/lighthouse/validator_client/doppelganger_service)
+#10 180.8    Compiling validator_services v0.1.0 (/lighthouse/validator_client/validator_services)
+#10 182.7    Compiling validator_dir v0.1.0 (/lighthouse/common/validator_dir)
+#10 182.9    Compiling account_utils v0.1.0 (/lighthouse/common/account_utils)
+#10 183.2    Compiling initialized_validators v0.1.0 (/lighthouse/validator_client/initialized_validators)
+#10 183.2    Compiling validator_manager v0.1.0 (/lighthouse/validator_manager)
+#10 183.9    Compiling lighthouse_validator_store v0.1.0 (/lighthouse/validator_client/lighthouse_validator_store)
+#10 184.0    Compiling account_manager v0.3.5 (/lighthouse/account_manager)
+#10 184.4    Compiling validator_http_metrics v0.1.0 (/lighthouse/validator_client/http_metrics)
+#10 186.4    Compiling beacon_processor v0.1.0 (/lighthouse/beacon_node/beacon_processor)
+#10 186.4    Compiling system_health v0.1.0 (/lighthouse/common/system_health)
+#10 186.6    Compiling validator_http_api v0.1.0 (/lighthouse/validator_client/http_api)
+#10 186.8    Compiling eth1 v0.2.0 (/lighthouse/beacon_node/eth1)
+#10 188.1    Compiling genesis v0.2.0 (/lighthouse/beacon_node/genesis)
+#10 188.8    Compiling beacon_chain v0.2.0 (/lighthouse/beacon_node/beacon_chain)
+#10 199.0    Compiling network v0.2.0 (/lighthouse/beacon_node/network)
+#10 199.0    Compiling http_metrics v0.1.0 (/lighthouse/beacon_node/http_metrics)
+#10 199.0    Compiling timer v0.2.0 (/lighthouse/beacon_node/timer)
+#10 200.5 warning: unused variable: `seen_duration`
+#10 200.5    --> beacon_node/network/src/network_beacon_processor/gossip_methods.rs:907:9
+#10 200.5     |
+#10 200.5 907 |         seen_duration: Duration,
+#10 200.5     |         ^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_seen_duration`
+#10 200.5     |
+#10 200.5     = note: `#[warn(unused_variables)]` on by default
+#10 200.5 
+#10 203.1    Compiling validator_client v0.3.5 (/lighthouse/validator_client)
+#10 206.0    Compiling http_api v0.1.0 (/lighthouse/beacon_node/http_api)
+#10 206.0    Compiling slasher_service v0.1.0 (/lighthouse/slasher/service)
+#10 206.5 warning: `network` (lib) generated 1 warning
+#10 224.7    Compiling client v0.2.0 (/lighthouse/beacon_node/client)
+#10 225.7    Compiling beacon_node v7.1.0-beta.0 (/lighthouse/beacon_node)
+#10 226.2    Compiling boot_node v7.1.0-beta.0 (/lighthouse/boot_node)
+#10 226.2    Compiling database_manager v0.1.0 (/lighthouse/database_manager)
+#10 500.8 error: could not compile `lighthouse` (bin "lighthouse")
+#10 500.8 
+#10 500.8 Caused by:
+#10 500.8   process didn't exit successfully: `/usr/local/rustup/toolchains/1.84.0-aarch64-unknown-linux-gnu/bin/rustc --crate-name lighthouse --edition=2021 lighthouse/src/main.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C opt-level=3 -C embed-bitcode=no --cfg 'feature="beacon-node-leveldb"' --cfg 'feature="default"' --cfg 'feature="portable"' --cfg 'feature="slasher-lmdb"' --cfg 'feature="spec-minimal"' --check-cfg 'cfg(docsrs)' --check-cfg 'cfg(feature, values("beacon-node-leveldb", "beacon-node-redb", "console-subscriber", "default", "gnosis", "jemalloc", "modern", "portable", "slasher-lmdb", "slasher-mdbx", "slasher-redb", "spec-minimal", "write_ssz_files"))' -C metadata=08bb83a1d33c6c84 -C extra-filename=-08bb83a1d33c6c84 --out-dir /lighthouse/target/release/deps -C strip=debuginfo -L dependency=/lighthouse/target/release/deps --extern account_manager=/lighthouse/target/release/deps/libaccount_manager-d08f8c174a99a1aa.rlib --extern account_utils=/lighthouse/target/release/deps/libaccount_utils-d2bd0b075a7dbb1a.rlib --extern beacon_node=/lighthouse/target/release/deps/libbeacon_node-e0f33b67b6c03421.rlib --extern bls=/lighthouse/target/release/deps/libbls-d2230e9aa9f7b876.rlib --extern boot_node=/lighthouse/target/release/deps/libboot_node-a29d7e8689276a9d.rlib --extern clap=/lighthouse/target/release/deps/libclap-3231c41f29778d4f.rlib --extern clap_utils=/lighthouse/target/release/deps/libclap_utils-3bdc6390ff66c28e.rlib --extern database_manager=/lighthouse/target/release/deps/libdatabase_manager-814ad413f29e4bfc.rlib --extern directory=/lighthouse/target/release/deps/libdirectory-993a04726eb27981.rlib --extern environment=/lighthouse/target/release/deps/libenvironment-394d6d4c48faeeb9.rlib --extern eth2_network_config=/lighthouse/target/release/deps/libeth2_network_config-8e8d26b73a555f39.rlib --extern ethereum_hashing=/lighthouse/target/release/deps/libethereum_hashing-215448e927b46342.rlib --extern futures=/lighthouse/target/release/deps/libfutures-d839b25ced7c26e5.rlib --extern lighthouse_version=/lighthouse/target/release/deps/liblighthouse_version-28cd6139b669b046.rlib --extern logging=/lighthouse/target/release/deps/liblogging-68a16f5cc205b8af.rlib --extern malloc_utils=/lighthouse/target/release/deps/libmalloc_utils-e0c2bfc175c4eaec.rlib --extern metrics=/lighthouse/target/release/deps/libmetrics-68eaa3f905d65e2c.rlib --extern serde=/lighthouse/target/release/deps/libserde-3d48d283c102222f.rlib --extern serde_json=/lighthouse/target/release/deps/libserde_json-3e92a4b507a57ead.rlib --extern serde_yaml=/lighthouse/target/release/deps/libserde_yaml-1caedb57e7c50994.rlib --extern slasher=/lighthouse/target/release/deps/libslasher-43ce7e22e7f785ed.rlib --extern store=/lighthouse/target/release/deps/libstore-647e942ffe4fe19b.rlib --extern task_executor=/lighthouse/target/release/deps/libtask_executor-ef3f76fe091417fb.rlib --extern tracing=/lighthouse/target/release/deps/libtracing-1ce17276f6c6a8f6.rlib --extern tracing_subscriber=/lighthouse/target/release/deps/libtracing_subscriber-46fede8296cc61ac.rlib --extern types=/lighthouse/target/release/deps/libtypes-4b43ce7a43b956c8.rlib --extern unused_port=/lighthouse/target/release/deps/libunused_port-ee5ac2b62c75c810.rlib --extern validator_client=/lighthouse/target/release/deps/libvalidator_client-d4b41d40d2a98807.rlib --extern validator_manager=/lighthouse/target/release/deps/libvalidator_manager-2631bd15108bc3d3.rlib -L native=/lighthouse/target/release/build/blst-c0c9339daa9d2aac/out -L native=/lighthouse/target/release/build/ring-183a8fede826bc82/out -L native=/lighthouse/target/release/build/c-kzg-0e3f4794c1012f36/out -L native=/lighthouse/target/release/build/libsqlite3-sys-3e894c165d82c4b4/out -L native=/lighthouse/target/release/build/openssl-sys-df8a11d377c3248b/out/openssl-build/install/lib -L native=/lighthouse/target/release/build/leveldb-sys-64243de3f15cfff3/out/lib -L native=/lighthouse/target/release/build/xdelta3-fbba0a076d161ef7/out -L native=/lighthouse/target/release/build/zstd-sys-e9ee75f7db882a4a/out -L native=/lighthouse/target/release/build/lmdb-rkv-sys-fee1c6072260ee68/out -L native=/lighthouse/target/release/build/tikv-jemalloc-sys-02789773eef5b5cc/out/build/lib` (signal: 9, SIGKILL: kill)
+#10 502.7 error: failed to compile `lighthouse v7.1.0-beta.0 (/lighthouse/lighthouse)`, intermediate artifacts can be found at `/lighthouse/target`.
+#10 502.7 To reuse those artifacts with a future compilation, set the environment variable `CARGO_TARGET_DIR` to that path.
+#10 502.7 make: *** [Makefile:44: install] Error 101
+#10 ERROR: process "/bin/sh -c cd lighthouse && make" did not complete successfully: cannot allocate memory
+------
+ > [builder 4/4] RUN cd lighthouse && make:
+225.7    Compiling beacon_node v7.1.0-beta.0 (/lighthouse/beacon_node)
+226.2    Compiling boot_node v7.1.0-beta.0 (/lighthouse/boot_node)
+226.2    Compiling database_manager v0.1.0 (/lighthouse/database_manager)
+500.8 error: could not compile `lighthouse` (bin "lighthouse")
+500.8 
+500.8 Caused by:
+500.8   process didn't exit successfully: `/usr/local/rustup/toolchains/1.84.0-aarch64-unknown-linux-gnu/bin/rustc --crate-name lighthouse --edition=2021 lighthouse/src/main.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C opt-level=3 -C embed-bitcode=no --cfg 'feature="beacon-node-leveldb"' --cfg 'feature="default"' --cfg 'feature="portable"' --cfg 'feature="slasher-lmdb"' --cfg 'feature="spec-minimal"' --check-cfg 'cfg(docsrs)' --check-cfg 'cfg(feature, values("beacon-node-leveldb", "beacon-node-redb", "console-subscriber", "default", "gnosis", "jemalloc", "modern", "portable", "slasher-lmdb", "slasher-mdbx", "slasher-redb", "spec-minimal", "write_ssz_files"))' -C metadata=08bb83a1d33c6c84 -C extra-filename=-08bb83a1d33c6c84 --out-dir /lighthouse/target/release/deps -C strip=debuginfo -L dependency=/lighthouse/target/release/deps --extern account_manager=/lighthouse/target/release/deps/libaccount_manager-d08f8c174a99a1aa.rlib --extern account_utils=/lighthouse/target/release/deps/libaccount_utils-d2bd0b075a7dbb1a.rlib --extern beacon_node=/lighthouse/target/release/deps/libbeacon_node-e0f33b67b6c03421.rlib --extern bls=/lighthouse/target/release/deps/libbls-d2230e9aa9f7b876.rlib --extern boot_node=/lighthouse/target/release/deps/libboot_node-a29d7e8689276a9d.rlib --extern clap=/lighthouse/target/release/deps/libclap-3231c41f29778d4f.rlib --extern clap_utils=/lighthouse/target/release/deps/libclap_utils-3bdc6390ff66c28e.rlib --extern database_manager=/lighthouse/target/release/deps/libdatabase_manager-814ad413f29e4bfc.rlib --extern directory=/lighthouse/target/release/deps/libdirectory-993a04726eb27981.rlib --extern environment=/lighthouse/target/release/deps/libenvironment-394d6d4c48faeeb9.rlib --extern eth2_network_config=/lighthouse/target/release/deps/libeth2_network_config-8e8d26b73a555f39.rlib --extern ethereum_hashing=/lighthouse/target/release/deps/libethereum_hashing-215448e927b46342.rlib --extern futures=/lighthouse/target/release/deps/libfutures-d839b25ced7c26e5.rlib --extern lighthouse_version=/lighthouse/target/release/deps/liblighthouse_version-28cd6139b669b046.rlib --extern logging=/lighthouse/target/release/deps/liblogging-68a16f5cc205b8af.rlib --extern malloc_utils=/lighthouse/target/release/deps/libmalloc_utils-e0c2bfc175c4eaec.rlib --extern metrics=/lighthouse/target/release/deps/libmetrics-68eaa3f905d65e2c.rlib --extern serde=/lighthouse/target/release/deps/libserde-3d48d283c102222f.rlib --extern serde_json=/lighthouse/target/release/deps/libserde_json-3e92a4b507a57ead.rlib --extern serde_yaml=/lighthouse/target/release/deps/libserde_yaml-1caedb57e7c50994.rlib --extern slasher=/lighthouse/target/release/deps/libslasher-43ce7e22e7f785ed.rlib --extern store=/lighthouse/target/release/deps/libstore-647e942ffe4fe19b.rlib --extern task_executor=/lighthouse/target/release/deps/libtask_executor-ef3f76fe091417fb.rlib --extern tracing=/lighthouse/target/release/deps/libtracing-1ce17276f6c6a8f6.rlib --extern tracing_subscriber=/lighthouse/target/release/deps/libtracing_subscriber-46fede8296cc61ac.rlib --extern types=/lighthouse/target/release/deps/libtypes-4b43ce7a43b956c8.rlib --extern unused_port=/lighthouse/target/release/deps/libunused_port-ee5ac2b62c75c810.rlib --extern validator_client=/lighthouse/target/release/deps/libvalidator_client-d4b41d40d2a98807.rlib --extern validator_manager=/lighthouse/target/release/deps/libvalidator_manager-2631bd15108bc3d3.rlib -L native=/lighthouse/target/release/build/blst-c0c9339daa9d2aac/out -L native=/lighthouse/target/release/build/ring-183a8fede826bc82/out -L native=/lighthouse/target/release/build/c-kzg-0e3f4794c1012f36/out -L native=/lighthouse/target/release/build/libsqlite3-sys-3e894c165d82c4b4/out -L native=/lighthouse/target/release/build/openssl-sys-df8a11d377c3248b/out/openssl-build/install/lib -L native=/lighthouse/target/release/build/leveldb-sys-64243de3f15cfff3/out/lib -L native=/lighthouse/target/release/build/xdelta3-fbba0a076d161ef7/out -L native=/lighthouse/target/release/build/zstd-sys-e9ee75f7db882a4a/out -L native=/lighthouse/target/release/build/lmdb-rkv-sys-fee1c6072260ee68/out -L native=/lighthouse/target/release/build/tikv-jemalloc-sys-02789773eef5b5cc/out/build/lib` (signal: 9, SIGKILL: kill)
+502.7 error: failed to compile `lighthouse v7.1.0-beta.0 (/lighthouse/lighthouse)`, intermediate artifacts can be found at `/lighthouse/target`.
+502.7 To reuse those artifacts with a future compilation, set the environment variable `CARGO_TARGET_DIR` to that path.
+502.7 make: *** [Makefile:44: install] Error 101
+------
+Dockerfile:10
+--------------------
+   8 |     ENV PROFILE=$PROFILE
+   9 |     ENV CARGO_NET_GIT_FETCH_WITH_CLI=$CARGO_USE_GIT_CLI
+  10 | >>> RUN cd lighthouse && make
+  11 |     
+  12 |     FROM ubuntu:22.04
+--------------------
+ERROR: failed to solve: ResourceExhausted: process "/bin/sh -c cd lighthouse && make" did not complete successfully: cannot allocate memory
+
+View build details: docker-desktop://dashboard/build/default/default/qf6jhethug98t99jp4o90q68f

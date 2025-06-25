@@ -1,0 +1,15 @@
+FROM ubuntu:22.04
+
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y \
+    ca-certificates \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy pre-built lighthouse binary
+COPY lighthouse-binary /usr/local/bin/lighthouse
+
+# Make it executable
+RUN chmod +x /usr/local/bin/lighthouse
+
+ENTRYPOINT ["lighthouse"]
