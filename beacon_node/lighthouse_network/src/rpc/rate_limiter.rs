@@ -389,6 +389,10 @@ impl RPCRateLimiter {
         self.blbroot_rl.prune(time_since_start);
         self.dcbrange_rl.prune(time_since_start);
         self.dcbroot_rl.prune(time_since_start);
+        self.lc_updates_by_range_rl.prune(time_since_start);
+        self.lc_bootstrap_rl.prune(time_since_start);
+        self.lc_optimistic_update_rl.prune(time_since_start);
+        self.lc_finality_update_rl.prune(time_since_start);
     }
 }
 
