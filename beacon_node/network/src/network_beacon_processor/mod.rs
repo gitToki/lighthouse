@@ -1,13 +1,11 @@
 use crate::sync::manager::BlockProcessType;
-use crate::sync::SamplingId;
 use crate::{service::NetworkMessage, sync::manager::SyncMessage};
-use beacon_chain::blob_verification::{GossipBlobError, GossipVerifiedBlob};
+use beacon_chain::blob_verification::{GossipBlobError, observe_gossip_blob};
 use beacon_chain::block_verification_types::RpcBlock;
-use beacon_chain::data_column_verification::{observe_gossip_data_column, GossipDataColumnError};
+use beacon_chain::data_column_verification::{GossipDataColumnError, observe_gossip_data_column};
 use beacon_chain::fetch_blobs::{
-    fetch_and_process_engine_blobs, EngineGetBlobsOutput, FetchEngineBlobError,
+    EngineGetBlobsOutput, FetchEngineBlobError, fetch_and_process_engine_blobs,
 };
-use beacon_chain::observed_data_sidecars::DoNotObserve;
 use beacon_chain::{
     AvailabilityProcessingStatus, BeaconChain, BeaconChainTypes, BlockError, NotifyExecutionLayer,
 };
@@ -15,14 +13,14 @@ use beacon_processor::{
     BeaconProcessorSend, DuplicateCache, GossipAggregatePackage, GossipAttestationPackage, Work,
     WorkEvent as BeaconWorkEvent,
 };
+use lighthouse_network::rpc::InboundRequestId;
 use lighthouse_network::rpc::methods::{
     BlobsByRangeRequest, BlobsByRootRequest, DataColumnsByRangeRequest, DataColumnsByRootRequest,
     LightClientUpdatesByRangeRequest,
 };
-use lighthouse_network::rpc::InboundRequestId;
 use lighthouse_network::{
-    rpc::{BlocksByRangeRequest, BlocksByRootRequest, LightClientBootstrapRequest, StatusMessage},
     Client, MessageId, NetworkGlobals, PeerId, PubsubMessage,
+    rpc::{BlocksByRangeRequest, BlocksByRootRequest, LightClientBootstrapRequest, StatusMessage},
 };
 use rand::prelude::SliceRandom;
 use std::path::PathBuf;
@@ -30,7 +28,7 @@ use std::sync::Arc;
 use std::time::Duration;
 use task_executor::TaskExecutor;
 use tokio::sync::mpsc::{self, error::TrySendError};
-use tracing::{debug, error, trace, warn, Instrument};
+use tracing::{debug, error, instrument, trace, warn};
 use types::*;
 
 pub use sync_methods::ChainSegmentProcessId;
@@ -229,7 +227,6 @@ impl<T: BeaconChainTypes> NetworkBeaconProcessor<T> {
         self: &Arc<Self>,
         message_id: MessageId,
         peer_id: PeerId,
-        peer_client: Client,
         subnet_id: DataColumnSubnetId,
         column_sidecar: Arc<DataColumnSidecar<T::EthSpec>>,
         seen_timestamp: Duration,
@@ -240,7 +237,6 @@ impl<T: BeaconChainTypes> NetworkBeaconProcessor<T> {
                 .process_gossip_data_column_sidecar(
                     message_id,
                     peer_id,
-                    peer_client,
                     subnet_id,
                     column_sidecar,
                     seen_timestamp,
@@ -498,43 +494,6 @@ impl<T: BeaconChainTypes> NetworkBeaconProcessor<T> {
         })
     }
 
-    /// Create a new `Work` event for some sampling columns, and reports the verification result
-    /// back to sync.
-    pub fn send_rpc_validate_data_columns(
-        self: &Arc<Self>,
-        block_root: Hash256,
-        data_columns: Vec<Arc<DataColumnSidecar<T::EthSpec>>>,
-        seen_timestamp: Duration,
-        id: SamplingId,
-    ) -> Result<(), Error<T::EthSpec>> {
-        let s = self.clone();
-        self.try_send(BeaconWorkEvent {
-            drop_during_sync: false,
-            work: Work::RpcVerifyDataColumn(Box::pin(async move {
-                let result = s
-                    .clone()
-                    .validate_rpc_data_columns(block_root, data_columns, seen_timestamp)
-                    .await;
-                // Sync handles these results
-                s.send_sync_message(SyncMessage::SampleVerified { id, result });
-            })),
-        })
-    }
-
-    /// Create a new `Work` event with a block sampling completed result
-    pub fn send_sampling_completed(
-        self: &Arc<Self>,
-        block_root: Hash256,
-    ) -> Result<(), Error<T::EthSpec>> {
-        let nbp = self.clone();
-        self.try_send(BeaconWorkEvent {
-            drop_during_sync: false,
-            work: Work::SamplingResult(Box::pin(async move {
-                nbp.process_sampling_completed(block_root).await;
-            })),
-        })
-    }
-
     /// Create a new work event to import `blocks` as a beacon chain segment.
     pub fn send_chain_segment(
         self: &Arc<Self>,
@@ -670,7 +629,7 @@ impl<T: BeaconChainTypes> NetworkBeaconProcessor<T> {
         self: &Arc<Self>,
         peer_id: PeerId,
         inbound_request_id: InboundRequestId,
-        request: DataColumnsByRootRequest,
+        request: DataColumnsByRootRequest<T::EthSpec>,
     ) -> Result<(), Error<T::EthSpec>> {
         let processor = self.clone();
         let process_fn = move || {
@@ -792,13 +751,20 @@ impl<T: BeaconChainTypes> NetworkBeaconProcessor<T> {
         block_root: Hash256,
         publish_blobs: bool,
     ) {
-        let custody_columns = self.network_globals.sampling_columns();
+        if self.chain.config.disable_get_blobs {
+            return;
+        }
+        let epoch = block.slot().epoch(T::EthSpec::slots_per_epoch());
+        let custody_columns = self.chain.sampling_columns_for_epoch(epoch);
         let self_cloned = self.clone();
         let publish_fn = move |blobs_or_data_column| {
             if publish_blobs {
                 match blobs_or_data_column {
                     EngineGetBlobsOutput::Blobs(blobs) => {
-                        self_cloned.publish_blobs_gradually(blobs, block_root);
+                        self_cloned.publish_blobs_gradually(
+                            blobs.into_iter().map(|b| b.to_blob()).collect(),
+                            block_root,
+                        );
                     }
                     EngineGetBlobsOutput::CustodyColumns(columns) => {
                         self_cloned.publish_data_columns_gradually(
@@ -817,11 +783,6 @@ impl<T: BeaconChainTypes> NetworkBeaconProcessor<T> {
             custody_columns,
             publish_fn,
         )
-        .instrument(tracing::info_span!(
-            "",
-            service = "fetch_engine_blobs",
-            block_root = format!("{:?}", block_root)
-        ))
         .await
         {
             Ok(Some(availability)) => match availability {
@@ -864,36 +825,15 @@ impl<T: BeaconChainTypes> NetworkBeaconProcessor<T> {
         }
     }
 
-    /// Attempt to reconstruct all data columns if the following conditions satisfies:
-    /// - Our custody requirement is all columns
-    /// - We have >= 50% of columns, but not all columns
-    ///
-    /// Returns `Some(AvailabilityProcessingStatus)` if reconstruction is successfully performed,
-    /// otherwise returns `None`.
-    ///
-    /// The `publish_columns` parameter controls whether reconstructed columns should be published
-    /// to the gossip network.
-    async fn attempt_data_column_reconstruction(
-        self: &Arc<Self>,
-        block_root: Hash256,
-        publish_columns: bool,
-    ) -> Option<AvailabilityProcessingStatus> {
-        // Only supernodes attempt reconstruction
-        if !self
-            .chain
-            .data_availability_checker
-            .custody_context()
-            .current_is_supernode
-        {
-            return None;
-        }
-
+    /// Attempts to reconstruct all data columns if the conditions checked in
+    /// [`DataAvailabilityCheckerInner::check_and_set_reconstruction_started`] are satisfied.
+    #[instrument(level = "debug", skip_all, fields(?block_root))]
+    async fn attempt_data_column_reconstruction(self: &Arc<Self>, block_root: Hash256) {
         let result = self.chain.reconstruct_data_columns(block_root).await;
+
         match result {
             Ok(Some((availability_processing_status, data_columns_to_publish))) => {
-                if publish_columns {
-                    self.publish_data_columns_gradually(data_columns_to_publish, block_root);
-                }
+                self.publish_data_columns_gradually(data_columns_to_publish, block_root);
                 match &availability_processing_status {
                     AvailabilityProcessingStatus::Imported(hash) => {
                         debug!(
@@ -906,21 +846,18 @@ impl<T: BeaconChainTypes> NetworkBeaconProcessor<T> {
                     AvailabilityProcessingStatus::MissingComponents(_, _) => {
                         debug!(
                             result = "imported all custody columns",
-                            block_hash = %block_root,
+                            %block_root,
                             "Block components still missing block after reconstruction"
                         );
                     }
                 }
-
-                Some(availability_processing_status)
             }
             Ok(None) => {
                 // reason is tracked via the `KZG_DATA_COLUMN_RECONSTRUCTION_INCOMPLETE_TOTAL` metric
                 trace!(
-                    block_hash = %block_root,
+                    %block_root,
                     "Reconstruction not required for block"
                 );
-                None
             }
             Err(e) => {
                 error!(
@@ -928,7 +865,6 @@ impl<T: BeaconChainTypes> NetworkBeaconProcessor<T> {
                     error = ?e,
                     "Error during data column reconstruction"
                 );
-                None
             }
         }
     }
@@ -941,7 +877,7 @@ impl<T: BeaconChainTypes> NetworkBeaconProcessor<T> {
     /// publisher exists for a blob, it will eventually get published here.
     fn publish_blobs_gradually(
         self: &Arc<Self>,
-        mut blobs: Vec<GossipVerifiedBlob<T, DoNotObserve>>,
+        mut blobs: Vec<Arc<BlobSidecar<T::EthSpec>>>,
         block_root: Hash256,
     ) {
         let self_clone = self.clone();
@@ -961,7 +897,7 @@ impl<T: BeaconChainTypes> NetworkBeaconProcessor<T> {
                 // Permute the blobs and split them into batches.
                 // The hope is that we won't need to publish some blobs because we will receive them
                 // on gossip from other nodes.
-                blobs.shuffle(&mut rand::thread_rng());
+                blobs.shuffle(&mut rand::rng());
 
                 let blob_publication_batch_interval = chain.config.blob_publication_batch_interval;
                 let mut publish_count = 0usize;
@@ -972,8 +908,8 @@ impl<T: BeaconChainTypes> NetworkBeaconProcessor<T> {
                 while blobs_iter.peek().is_some() {
                     let batch = blobs_iter.by_ref().take(batch_size);
                     let publishable = batch
-                        .filter_map(|unobserved| match unobserved.observe(&chain) {
-                            Ok(observed) => Some(observed.clone_blob()),
+                        .filter_map(|blob| match observe_gossip_blob(&blob, &chain) {
+                            Ok(()) => Some(blob),
                             Err(GossipBlobError::RepeatBlob { .. }) => None,
                             Err(e) => {
                                 warn!(
@@ -1017,6 +953,7 @@ impl<T: BeaconChainTypes> NetworkBeaconProcessor<T> {
     /// by some nodes on the network as soon as possible. Our hope is that some columns arrive from
     /// other nodes in the meantime, obviating the need for us to publish them. If no other
     /// publisher exists for a column, it will eventually get published here.
+    #[instrument(level="debug", skip_all, fields(?block_root, data_column_count=data_columns_to_publish.len()))]
     fn publish_data_columns_gradually(
         self: &Arc<Self>,
         mut data_columns_to_publish: DataColumnSidecarList<T::EthSpec>,
@@ -1043,11 +980,11 @@ impl<T: BeaconChainTypes> NetworkBeaconProcessor<T> {
                 // Permute the columns and split them into batches.
                 // The hope is that we won't need to publish some columns because we will receive them
                 // on gossip from other nodes.
-                data_columns_to_publish.shuffle(&mut rand::thread_rng());
+                data_columns_to_publish.shuffle(&mut rand::rng());
 
                 let blob_publication_batch_interval = chain.config.blob_publication_batch_interval;
                 let blob_publication_batches = chain.config.blob_publication_batches;
-                let number_of_columns = chain.spec.number_of_columns as usize;
+                let number_of_columns = T::EthSpec::number_of_columns();
                 let batch_size = number_of_columns / blob_publication_batches;
                 let mut publish_count = 0usize;
 
