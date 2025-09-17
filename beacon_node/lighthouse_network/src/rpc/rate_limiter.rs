@@ -402,7 +402,7 @@ impl RPCRateLimiter {
             lc_updates_by_range_rl,
             fork_context: _,
         } = self;
-        
+
         goodbye_rl.prune(time_since_start);
         ping_rl.prune(time_since_start);
         metadata_rl.prune(time_since_start);
