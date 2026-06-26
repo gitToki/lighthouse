@@ -1,31 +1,36 @@
+use std::time::Instant;
 use std::{collections::hash_map::Entry, hash::Hash};
 
-use beacon_chain::validator_monitor::timestamp_now;
 use fnv::FnvHashMap;
 use lighthouse_network::PeerId;
+use slot_clock::timestamp_now;
 use strum::IntoStaticStr;
-use tracing::Span;
+use tracing::{Span, debug};
 use types::{Hash256, Slot};
 
 pub use blobs_by_range::BlobsByRangeRequestItems;
-pub use blobs_by_root::{BlobsByRootRequestItems, BlobsByRootSingleBlockRequest};
 pub use blocks_by_range::BlocksByRangeRequestItems;
 pub use blocks_by_root::{BlocksByRootRequestItems, BlocksByRootSingleRequest};
 pub use data_columns_by_range::DataColumnsByRangeRequestItems;
 pub use data_columns_by_root::{
     DataColumnsByRootRequestItems, DataColumnsByRootSingleBlockRequest,
 };
+pub use payload_envelopes_by_range::PayloadEnvelopesByRangeRequestItems;
+pub use payload_envelopes_by_root::{
+    PayloadEnvelopesByRootRequestItems, PayloadEnvelopesByRootSingleRequest,
+};
 
 use crate::metrics;
 
-use super::{RpcEvent, RpcResponseResult};
+use super::{RpcEvent, RpcResponseError, RpcResponseResult};
 
 mod blobs_by_range;
-mod blobs_by_root;
 mod blocks_by_range;
 mod blocks_by_root;
 mod data_columns_by_range;
 mod data_columns_by_root;
+mod payload_envelopes_by_range;
+mod payload_envelopes_by_root;
 
 #[derive(Debug, PartialEq, Eq, IntoStaticStr)]
 pub enum LookupVerifyError {
@@ -51,6 +56,7 @@ struct ActiveRequest<T: ActiveRequestItems> {
     peer_id: PeerId,
     // Error if the request terminates before receiving max expected responses
     expect_max_responses: bool,
+    start_instant: Instant,
     span: Span,
 }
 
@@ -60,7 +66,7 @@ enum State<T> {
     Errored,
 }
 
-impl<K: Eq + Hash, T: ActiveRequestItems> ActiveRequests<K, T> {
+impl<K: Copy + Eq + Hash + std::fmt::Display, T: ActiveRequestItems> ActiveRequests<K, T> {
     pub fn new(name: &'static str) -> Self {
         Self {
             requests: <_>::default(),
@@ -83,6 +89,7 @@ impl<K: Eq + Hash, T: ActiveRequestItems> ActiveRequests<K, T> {
                 state: State::Active(items),
                 peer_id,
                 expect_max_responses,
+                start_instant: Instant::now(),
                 span,
             },
         );
@@ -112,7 +119,7 @@ impl<K: Eq + Hash, T: ActiveRequestItems> ActiveRequests<K, T> {
             return None;
         };
 
-        match rpc_event {
+        let result = match rpc_event {
             // Handler of a success ReqResp chunk. Adds the item to the request accumulator.
             // `ActiveRequestItems` validates the item before appending to its internal state.
             RpcEvent::Response(item, seen_timestamp) => {
@@ -126,7 +133,7 @@ impl<K: Eq + Hash, T: ActiveRequestItems> ActiveRequests<K, T> {
                             Ok(true) => {
                                 let items = items.consume();
                                 request.state = State::CompletedEarly;
-                                Some(Ok((items, seen_timestamp)))
+                                Some(Ok((items, seen_timestamp, request.start_instant.elapsed())))
                             }
                             // Received item, but we are still expecting more
                             Ok(false) => None,
@@ -163,7 +170,11 @@ impl<K: Eq + Hash, T: ActiveRequestItems> ActiveRequests<K, T> {
                             }
                             .into()))
                         } else {
-                            Some(Ok((items.consume(), timestamp_now())))
+                            Some(Ok((
+                                items.consume(),
+                                timestamp_now(),
+                                request.start_instant.elapsed(),
+                            )))
                         }
                     }
                     // Items already returned, ignore stream termination
@@ -188,7 +199,41 @@ impl<K: Eq + Hash, T: ActiveRequestItems> ActiveRequests<K, T> {
                     State::Errored => None,
                 }
             }
-        }
+        };
+
+        result.map(|result| match result {
+            Ok((items, seen_timestamp, duration)) => {
+                metrics::inc_counter_vec(&metrics::SYNC_RPC_REQUEST_SUCCESSES, &[self.name]);
+                metrics::observe_timer_vec(&metrics::SYNC_RPC_REQUEST_TIME, &[self.name], duration);
+                debug!(
+                    %id,
+                    method = self.name,
+                    count = items.len(),
+                    "Sync RPC request completed"
+                );
+
+                Ok((items, seen_timestamp))
+            }
+            Err(e) => {
+                let err_str: &'static str = match &e {
+                    RpcResponseError::RpcError(e) => e.into(),
+                    RpcResponseError::VerifyError(e) => e.into(),
+                    RpcResponseError::CustodyRequestError(_) => "CustodyRequestError",
+                    RpcResponseError::BlockComponentCouplingError(_) => {
+                        "BlockComponentCouplingError"
+                    }
+                };
+                metrics::inc_counter_vec(&metrics::SYNC_RPC_REQUEST_ERRORS, &[self.name, err_str]);
+                debug!(
+                    %id,
+                    method = self.name,
+                    error = ?e,
+                    "Sync RPC request error"
+                );
+
+                Err(e)
+            }
+        })
     }
 
     pub fn active_requests_of_peer(&self, peer_id: &PeerId) -> Vec<&K> {

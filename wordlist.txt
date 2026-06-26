@@ -2,6 +2,7 @@ allocator
 APIs
 ARMv
 AUR
+autocomplete
 Backends
 Backfilling
 Beaconcha
@@ -44,6 +45,7 @@ Fusaka
 Geth
 GiB
 Gitcoin
+Gloas
 Gnosis
 Goerli
 Grafana
@@ -57,6 +59,7 @@ JSON
 KeyManager
 Kurtosis
 LMDB
+LLM
 LLVM
 LRU
 LTO
@@ -110,6 +113,7 @@ Validator
 VC
 VCs
 VPN
+VSCode
 WalletConnect
 Withdrawable
 WSL

@@ -15,7 +15,9 @@
 //! 2. There's a possibility that the head block is never built upon, causing wasted CPU cycles.
 use crate::validator_monitor::HISTORIC_EPOCHS as VALIDATOR_MONITOR_HISTORIC_EPOCHS;
 use crate::{
-    BeaconChain, BeaconChainError, BeaconChainTypes, chain_config::FORK_CHOICE_LOOKAHEAD_FACTOR,
+    BeaconChain, BeaconChainError, BeaconChainTypes,
+    chain_config::FORK_CHOICE_LOOKAHEAD_FACTOR,
+    shuffling_cache::{CachedPTCs, CachedShuffling},
 };
 use slot_clock::SlotClock;
 use state_processing::per_slot_processing;
@@ -363,24 +365,30 @@ fn advance_head<T: BeaconChainTypes>(beacon_chain: &Arc<BeaconChain<T>>) -> Resu
         // For epochs *greater than* the Fulu fork epoch, we have also determined the proposer
         // shuffling for the next epoch.
         let next_epoch = state.next_epoch()?;
-        let next_epoch_decision_root = state.proposer_shuffling_decision_root_at_epoch(
-            next_epoch,
-            head_block_root,
-            &beacon_chain.spec,
-        )?;
-        beacon_chain.with_proposer_cache(
-            next_epoch_decision_root,
-            next_epoch,
-            |_| Ok(()),
-            || {
-                debug!(
-                    shuffling_decision_root = ?next_epoch_decision_root,
-                    epoch = %next_epoch,
-                    "Computing next epoch proposer shuffling in state advance"
-                );
-                Ok::<_, Error>((advanced_state_root, state.clone()))
-            },
-        )?;
+        let next_epoch_decision_slot = beacon_chain
+            .spec
+            .proposer_shuffling_decision_slot::<T::EthSpec>(next_epoch);
+
+        if state.slot() > next_epoch_decision_slot {
+            let next_epoch_decision_root = state.proposer_shuffling_decision_root_at_epoch(
+                next_epoch,
+                head_block_root,
+                &beacon_chain.spec,
+            )?;
+            beacon_chain.with_proposer_cache(
+                next_epoch_decision_root,
+                next_epoch,
+                |_| Ok(()),
+                || {
+                    debug!(
+                        shuffling_decision_root = ?next_epoch_decision_root,
+                        epoch = %next_epoch,
+                        "Computing next epoch proposer shuffling in state advance"
+                    );
+                    Ok::<_, Error>((advanced_state_root, state.clone()))
+                },
+            )?;
+        }
 
         // Update the attester cache.
         let shuffling_id =
@@ -388,26 +396,31 @@ fn advance_head<T: BeaconChainTypes>(beacon_chain: &Arc<BeaconChain<T>>) -> Resu
                 .map_err(BeaconChainError::from)?;
         let committee_cache = state
             .committee_cache(RelativeEpoch::Next)
-            .map_err(BeaconChainError::from)?;
-        beacon_chain
-            .shuffling_cache
-            .write()
-            .insert_committee_cache(shuffling_id.clone(), committee_cache);
+            .map_err(BeaconChainError::from)?
+            .clone();
+        let shuffling_epoch = RelativeEpoch::Next.into_epoch(state.current_epoch());
 
-        debug!(
-            ?head_block_root,
-            next_epoch_shuffling_root = ?shuffling_id.shuffling_decision_block,
-            state_epoch = %state.current_epoch(),
-            current_epoch = %current_slot.epoch(T::EthSpec::slots_per_epoch()),
-            "Primed proposer and attester caches"
-        );
+        if let Some(ptcs) = CachedPTCs::try_from_state(&state, shuffling_epoch, &beacon_chain.spec)?
+        {
+            beacon_chain.shuffling_cache.write().insert_committee_cache(
+                shuffling_id.clone(),
+                CachedShuffling::new(committee_cache, ptcs),
+            );
+
+            debug!(
+                ?head_block_root,
+                next_epoch_shuffling_root = ?shuffling_id.shuffling_decision_block,
+                state_epoch = %state.current_epoch(),
+                current_epoch = %current_slot.epoch(T::EthSpec::slots_per_epoch()),
+                "Primed proposer and attester caches"
+            );
+        } else {
+            debug!(
+                %shuffling_epoch,
+                "Skipping priming of attester cache for Gloas boundary epoch"
+            );
+        }
     }
-
-    // Apply the state to the attester cache, if the cache deems it interesting.
-    beacon_chain
-        .attester_cache
-        .maybe_cache_state(&state, head_block_root, &beacon_chain.spec)
-        .map_err(BeaconChainError::from)?;
 
     let final_slot = state.slot();
 
